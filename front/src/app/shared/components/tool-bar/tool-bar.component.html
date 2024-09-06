@@ -1,0 +1,18 @@
+<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+    <div class="container-fluid">
+        <img width="40" alt="Angular Logo" src="assets/logo.png" />
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav me-auto mb-2 mb-md-0">
+                <li class="nav-item">
+                    <a class="ps-1" [routerLink]="['/home']">Accueil</a>
+                </li>
+                <li class="nav-item">
+                    <a class="ps-1" [routerLink]="['/reservations']">Réservations</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>

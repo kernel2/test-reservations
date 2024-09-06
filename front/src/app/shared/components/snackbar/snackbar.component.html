@@ -1,0 +1,11 @@
+<div class="px-3 d-flex align-items-center justify-content-center" *ngIf="show()" [ngClass]="['snackbar-wrap', type()]">
+  <div class="h-100 w-100 d-flex justify-content-between pb-2">
+    <div class="d-flex align-items-center ps-4">
+      <div class="h-100" class="icon icon-20" [ngClass]="computedIcon().icon"></div>
+      <p class="snackbar-text ubuntu-regular font-size-12 ps-3">
+        {{ message() }}
+      </p>
+    </div>
+    <div role="button" aria-hidden="true" class="icon icon-12 icon-leave" (click)="show.set(false)"></div>
+  </div>
+</div>

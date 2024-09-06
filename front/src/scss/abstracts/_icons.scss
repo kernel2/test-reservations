@@ -1,0 +1,40 @@
+@mixin icon_size($width, $height) {
+  width: $width + rem;
+  height: $height + rem;
+  background-size: $width + rem $height + rem !important;
+}
+
+.icon {
+  width: 5rem;
+  height: 5rem;
+  background-size: 5rem 5rem !important;
+  background-repeat: no-repeat !important;
+  cursor: pointer;
+}
+
+ 
+.icon-12 {
+  @include icon_size(1.2, 1.2);
+}
+
+.icon-20 {
+  @include icon_size(2, 2);
+} 
+
+
+// snackbar
+.icon-checked {
+  background-image: url('/assets/images/icons/snackbar/checked.svg');
+}
+
+.icon-cross {
+  background-image: url('/assets/images/icons/snackbar/cross.svg');
+}
+
+.icon-info {
+  background-image: url('/assets/images/icons/snackbar/info.svg');
+}
+
+.icon-leave {
+  background-image: url('/assets/images/icons/snackbar/leave.svg');
+}

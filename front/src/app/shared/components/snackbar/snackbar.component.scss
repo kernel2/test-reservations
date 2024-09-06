@@ -1,0 +1,25 @@
+.snackbar-wrap {
+  position: fixed;
+  top: .5rem;
+  right: 1rem;
+  border-radius: 0.4rem;
+  min-width: 25rem;
+  min-height: 5rem;
+  z-index: 1031;
+  &.success {
+    background: #30b567;
+  }
+  &.error {
+    background: #ef3923;
+  }
+  &.info {
+    background: #1b72e7;
+  }
+  .snackbar-text {
+    text-align: center;
+    color: white;
+  }
+  p{
+    max-width: 30rem;
+  }
+}
