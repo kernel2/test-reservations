@@ -1,6 +1,4 @@
 package com.transdev.reservations.domain.model;
 
-import java.util.UUID;
-
-public record Bill(UUID reservationId, String paymentType) {
+public record Bill(Long reservationId, String paymentType) {
 }
