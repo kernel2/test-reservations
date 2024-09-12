@@ -1,4 +1,4 @@
-package com.transdev.reservations.infrastructure.adapters.persistence;
+package com.transdev.reservations.infrastructure.adapters.persistence.bill;
 
 import com.transdev.reservations.application.dto.BillDTO;
 import com.transdev.reservations.domain.model.Bill;
@@ -17,5 +17,8 @@ public interface BillMapper {
     Bill toDomainModel(BillDTO billDTO);
 
     BillDTO toDTO(Bill bill);
+
+    BillEntity toEntity(Bill bill);
+    Bill toDomain(BillEntity billEntity);
 
 }

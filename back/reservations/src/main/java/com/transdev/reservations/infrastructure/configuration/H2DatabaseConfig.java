@@ -1,4 +1,4 @@
-package com.transdev.reservations.infrastructure.adapters.persistence;
+package com.transdev.reservations.infrastructure.configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

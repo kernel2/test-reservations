@@ -1,5 +1,6 @@
 package com.transdev.reservations.infrastructure.adapters.rest;
 
+import com.transdev.reservations.application.dto.ClientDTO;
 import com.transdev.reservations.application.services.ClientApplicationService;
 import com.transdev.reservations.domain.model.Client;
 import org.springframework.http.ResponseEntity;
@@ -18,8 +19,8 @@ public class ClientController {
     }
 
     @PostMapping
-    public ResponseEntity<Client> createClient(@RequestBody Client client) {
-        return ResponseEntity.ok(clientApplicationService.createClient(client));
+    public ResponseEntity<ClientDTO> createClient(@RequestBody ClientDTO clientDTO) {
+        return ResponseEntity.ok(clientApplicationService.createClient(clientDTO));
     }
 
     @GetMapping("/{id}")

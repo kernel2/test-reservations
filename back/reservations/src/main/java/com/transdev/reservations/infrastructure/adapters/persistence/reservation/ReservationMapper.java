@@ -1,4 +1,4 @@
-package com.transdev.reservations.infrastructure.adapters.persistence;
+package com.transdev.reservations.infrastructure.adapters.persistence.reservation;
 
 import com.transdev.reservations.application.dto.ReservationDTO;
 import com.transdev.reservations.domain.model.Reservation;

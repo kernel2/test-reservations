@@ -5,7 +5,7 @@ import com.transdev.reservations.application.dto.ReservationDTO;
 import com.transdev.reservations.domain.model.Bill;
 import com.transdev.reservations.domain.model.Reservation;
 import com.transdev.reservations.domain.ports.incoming.ReservationService;
-import com.transdev.reservations.infrastructure.adapters.persistence.ReservationMapper;
+import com.transdev.reservations.infrastructure.adapters.persistence.reservation.ReservationMapper;
 import org.springframework.stereotype.Service;
 
 @Service

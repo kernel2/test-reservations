@@ -1,4 +1,4 @@
-package com.transdev.reservations.infrastructure.adapters.persistence;
+package com.transdev.reservations.infrastructure.adapters.persistence.client;
 
 import com.transdev.reservations.domain.model.Client;
 import com.transdev.reservations.domain.ports.outgoing.ClientRepository;

@@ -1,4 +1,4 @@
-package com.transdev.reservations.infrastructure.adapters.persistence;
+package com.transdev.reservations.infrastructure.adapters.persistence.client;
 
 import com.transdev.reservations.application.dto.ClientDTO;
 import com.transdev.reservations.domain.model.Client;
@@ -6,7 +6,6 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.ReportingPolicy;
-import org.mapstruct.factory.Mappers;
 
 @Mapper(
         componentModel = "spring",

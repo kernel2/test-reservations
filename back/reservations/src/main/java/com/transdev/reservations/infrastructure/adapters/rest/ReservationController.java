@@ -2,6 +2,8 @@ package com.transdev.reservations.infrastructure.adapters.rest;
 
 import com.transdev.reservations.application.dto.ReservationDTO;
 import com.transdev.reservations.application.services.ReservationApplicationService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -9,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/reservations")
 public class ReservationController {
 
+    private static final Logger log = LoggerFactory.getLogger(ReservationController.class);
     private final ReservationApplicationService reservationApplicationService;
 
     public ReservationController(ReservationApplicationService reservationApplicationService) {
@@ -24,6 +27,8 @@ public class ReservationController {
     @GetMapping("/{id}")
     public ResponseEntity<ReservationDTO> getReservation(@PathVariable Long id) {
         ReservationDTO reservationDTO = reservationApplicationService.getReservation(id);
+        log.info("ReservationDTO in Rest control is : "+ reservationDTO);
+
         return ResponseEntity.ok(reservationDTO);
     }
 
