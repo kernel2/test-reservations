@@ -13,7 +13,7 @@ import org.mapstruct.ReportingPolicy;
         unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface ClientMapper {
 
-    @Mapping(target = "id", ignore = false)
+    @Mapping(target = "id", ignore = true)
     Client toDomainModel(ClientDTO clientDTO);
 
     ClientDTO toDTO(Client client);

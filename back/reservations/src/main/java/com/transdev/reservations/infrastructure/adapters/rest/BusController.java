@@ -22,6 +22,7 @@ public class BusController {
 
     @PostMapping
     public ResponseEntity<BusDTO> createBus(@RequestBody BusDTO busDTO) {
+        log.info("BusController busDTO is :" + busDTO);
         return ResponseEntity.ok(busApplicationService.createBus(busDTO));
     }
 

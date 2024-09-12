@@ -11,6 +11,10 @@ public class BusDTO {
     private LocalTime departureTime;
     private BigDecimal pricePerTrip;
 
+    public BusDTO() {
+        //empty constructor needed for deserialization
+    }
+
     public String getBusNumber() {
         return busNumber;
     }

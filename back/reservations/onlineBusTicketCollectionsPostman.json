@@ -1,0 +1,219 @@
+{
+  "info": {
+    "name": "Reservation System",
+    "description": "Postman collection for the Reservation system controllers",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "BusController",
+      "item": [
+        {
+          "name": "Create Bus",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"busNumber\": \"BUS123\",\n    \"seatsPerTrip\": 40,\n    \"departureTime\": \"08:30\",\n    \"pricePerTrip\": 50.00\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/buses",
+              "host": ["{{base_url}}"],
+              "path": ["buses"]
+            }
+          }
+        },
+        {
+          "name": "Get Bus By Number",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/buses/:busNumber",
+              "host": ["{{base_url}}"],
+              "path": ["buses", ":busNumber"],
+              "variable": [
+                {
+                  "key": "busNumber",
+                  "value": "BUS123"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get All Buses",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/buses",
+              "host": ["{{base_url}}"],
+              "path": ["buses"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "ClientController",
+      "item": [
+        {
+          "name": "Create Client",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"John Doe\",\n    \"email\": \"john.doe@example.com\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/clients",
+              "host": ["{{base_url}}"],
+              "path": ["clients"]
+            }
+          }
+        },
+        {
+          "name": "Get Client By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/clients/:id",
+              "host": ["{{base_url}}"],
+              "path": ["clients", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get All Clients",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/clients",
+              "host": ["{{base_url}}"],
+              "path": ["clients"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "ReservationController",
+      "item": [
+        {
+          "name": "Create Reservation",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"clientId\": 1,\n    \"busNumber\": \"BUS123\",\n    \"reservationDate\": \"2024-09-12\",\n    \"seatNumber\": 12\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/reservations",
+              "host": ["{{base_url}}"],
+              "path": ["reservations"]
+            }
+          }
+        },
+        {
+          "name": "Get Reservation By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/reservations/:id",
+              "host": ["{{base_url}}"],
+              "path": ["reservations", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Reservation",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/reservations/:id",
+              "host": ["{{base_url}}"],
+              "path": ["reservations", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "BillingController",
+      "item": [
+        {
+          "name": "Pay Reservation",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/bills/pay?reservationId=1&paymentType=creditCard",
+              "host": ["{{base_url}}"],
+              "path": ["bills", "pay"],
+              "query": [
+                {
+                  "key": "reservationId",
+                  "value": "1"
+                },
+                {
+                  "key": "paymentType",
+                  "value": "creditCard"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get All Bills",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/bills",
+              "host": ["{{base_url}}"],
+              "path": ["bills"]
+            }
+          }
+        },
+        {
+          "name": "Get Bills Sorted By Amount",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/bills/sorted",
+              "host": ["{{base_url}}"],
+              "path": ["bills", "sorted"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

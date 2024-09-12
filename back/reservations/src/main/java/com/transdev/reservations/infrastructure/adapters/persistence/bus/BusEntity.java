@@ -26,15 +26,31 @@ public class BusEntity {
         return busNumber;
     }
 
+    public void setBusNumber(String busNumber) {
+        this.busNumber = busNumber;
+    }
+
     public int getSeatsPerTrip() {
         return seatsPerTrip;
+    }
+
+    public void setSeatsPerTrip(int seatsPerTrip) {
+        this.seatsPerTrip = seatsPerTrip;
     }
 
     public LocalTime getDepartureTime() {
         return departureTime;
     }
 
+    public void setDepartureTime(LocalTime departureTime) {
+        this.departureTime = departureTime;
+    }
+
     public BigDecimal getPricePerTrip() {
         return pricePerTrip;
+    }
+
+    public void setPricePerTrip(BigDecimal pricePerTrip) {
+        this.pricePerTrip = pricePerTrip;
     }
 }

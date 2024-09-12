@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 public class ReservationController {
 
     private static final Logger log = LoggerFactory.getLogger(ReservationController.class);
+
     private final ReservationApplicationService reservationApplicationService;
 
     public ReservationController(ReservationApplicationService reservationApplicationService) {

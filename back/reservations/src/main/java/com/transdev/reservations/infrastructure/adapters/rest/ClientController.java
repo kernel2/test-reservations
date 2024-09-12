@@ -3,6 +3,8 @@ package com.transdev.reservations.infrastructure.adapters.rest;
 import com.transdev.reservations.application.dto.ClientDTO;
 import com.transdev.reservations.application.services.ClientApplicationService;
 import com.transdev.reservations.domain.model.Client;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,6 +14,9 @@ import java.util.List;
 @RequestMapping("/api/clients")
 public class ClientController {
 
+    private static final Logger log = LoggerFactory.getLogger(ClientController.class);
+
+
     private final ClientApplicationService clientApplicationService;
 
     public ClientController(ClientApplicationService clientApplicationService) {
@@ -20,6 +25,7 @@ public class ClientController {
 
     @PostMapping
     public ResponseEntity<ClientDTO> createClient(@RequestBody ClientDTO clientDTO) {
+        log.info("ClientController create ClientDTO "+ clientDTO);
         return ResponseEntity.ok(clientApplicationService.createClient(clientDTO));
     }
 
@@ -28,7 +34,7 @@ public class ClientController {
         return ResponseEntity.ok(clientApplicationService.getClientById(id));
     }
 
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<List<Client>> getAllClients() {
         return ResponseEntity.ok(clientApplicationService.getAllClients());
     }
