@@ -4,15 +4,15 @@ import com.transdev.reservations.domain.ports.incoming.BillingService;
 import com.transdev.reservations.domain.ports.incoming.BusService;
 import com.transdev.reservations.domain.ports.incoming.ClientService;
 import com.transdev.reservations.domain.ports.incoming.ReservationService;
-import com.transdev.reservations.domain.ports.outgoing.BillRepository;
-import com.transdev.reservations.domain.ports.outgoing.BusRepository;
-import com.transdev.reservations.domain.ports.outgoing.ClientRepository;
-import com.transdev.reservations.domain.ports.outgoing.PaymentService;
+import com.transdev.reservations.domain.ports.outgoing.*;
 import com.transdev.reservations.domain.services.BillingServiceImpl;
 import com.transdev.reservations.domain.services.BusServiceImpl;
 import com.transdev.reservations.domain.services.ClientServiceImpl;
 import com.transdev.reservations.domain.services.ReservationServiceImpl;
 import com.transdev.reservations.infrastructure.adapters.payment.PaymentServiceImpl;
+import com.transdev.reservations.infrastructure.adapters.persistence.reservation.ReservationJpaRepository;
+import com.transdev.reservations.infrastructure.adapters.persistence.reservation.ReservationMapper;
+import com.transdev.reservations.infrastructure.adapters.persistence.reservation.ReservationRepositoryAdapter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -20,8 +20,13 @@ import org.springframework.context.annotation.Configuration;
 public class ApplicationConfig {
 
     @Bean
-    public ReservationService reservationService(PaymentService paymentService) {
-        return new ReservationServiceImpl(paymentService);
+    public ReservationService reservationService(ReservationRepository reservationRepository, PaymentService paymentService) {
+        return new ReservationServiceImpl(reservationRepository,paymentService);
+    }
+
+    @Bean
+    public ReservationRepository reservationRepository(ReservationJpaRepository reservationJpaRepository, ReservationMapper reservationMapper) {
+        return new ReservationRepositoryAdapter(reservationJpaRepository, reservationMapper);
     }
 
     @Bean

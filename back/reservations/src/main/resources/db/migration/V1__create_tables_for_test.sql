@@ -17,9 +17,9 @@ CREATE TABLE IF NOT EXISTS buses (
 
 CREATE TABLE IF NOT EXISTS reservations (
                                             id BIGINT PRIMARY KEY,
-                                            date DATE NOT NULL,
                                             bus_number VARCHAR(255),
     client_id BIGINT,
+    date_of_travel TIMESTAMP NOT NULL,
     FOREIGN KEY (bus_number) REFERENCES buses(bus_number),
     FOREIGN KEY (client_id) REFERENCES clients(id)
     );
@@ -27,7 +27,6 @@ CREATE TABLE IF NOT EXISTS reservations (
 CREATE SEQUENCE reservations_seq START WITH 1 INCREMENT BY 1;
 
 ALTER TABLE reservations ALTER COLUMN id SET DEFAULT nextval('reservations_seq');
-
 
 CREATE TABLE IF NOT EXISTS bills (
                                      id BIGINT PRIMARY KEY,

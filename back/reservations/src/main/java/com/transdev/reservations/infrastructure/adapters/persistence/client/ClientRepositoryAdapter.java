@@ -27,7 +27,6 @@ public class ClientRepositoryAdapter implements ClientRepository {
     @Override
     @Transactional
     public Client save(Client client) {
-        log.info("ClientRepositoryAdapter Client :"+client);
         ClientEntity clientEntity = clientMapper.toEntity(client);
         ClientEntity savedEntity = clientJpaRepository.save(clientEntity);
         return clientMapper.toDomainModel(savedEntity);

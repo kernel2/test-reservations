@@ -1,6 +1,6 @@
 package com.transdev.reservations.domain.model;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
-public record Reservation(Long id, LocalDate tripDate, String busNumber, Long clientId) {
+public record Reservation(Long id, LocalDateTime dateOfTravel, String busNumber, Long clientId) {
 }

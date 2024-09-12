@@ -28,6 +28,10 @@ public class ReservationDTO {
         return clientId;
     }
 
+    public void setClientId(Long clientId) {
+        this.clientId = clientId;
+    }
+
     public String getBusNumber() {
         return busNumber;
     }
@@ -38,5 +42,19 @@ public class ReservationDTO {
 
     public LocalDateTime getDateOfTravel() {
         return dateOfTravel;
+    }
+
+    public void setDateOfTravel(LocalDateTime dateOfTravel) {
+        this.dateOfTravel = dateOfTravel;
+    }
+
+    @Override
+    public String toString() {
+        return "ReservationDTO{" +
+                "id=" + id +
+                ", clientId=" + clientId +
+                ", busNumber='" + busNumber + '\'' +
+                ", dateOfTravel=" + dateOfTravel +
+                '}';
     }
 }

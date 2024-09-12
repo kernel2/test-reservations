@@ -25,7 +25,6 @@ public class ClientController {
 
     @PostMapping
     public ResponseEntity<ClientDTO> createClient(@RequestBody ClientDTO clientDTO) {
-        log.info("ClientController create ClientDTO "+ clientDTO);
         return ResponseEntity.ok(clientApplicationService.createClient(clientDTO));
     }
 
@@ -34,7 +33,7 @@ public class ClientController {
         return ResponseEntity.ok(clientApplicationService.getClientById(id));
     }
 
-    @GetMapping("/all")
+    @GetMapping
     public ResponseEntity<List<Client>> getAllClients() {
         return ResponseEntity.ok(clientApplicationService.getAllClients());
     }

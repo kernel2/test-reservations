@@ -4,32 +4,35 @@ import com.transdev.reservations.domain.model.Bill;
 import com.transdev.reservations.domain.model.Reservation;
 import com.transdev.reservations.domain.ports.incoming.ReservationService;
 import com.transdev.reservations.domain.ports.outgoing.PaymentService;
+import com.transdev.reservations.domain.ports.outgoing.ReservationRepository;
+
+import java.util.List;
 
 public class ReservationServiceImpl implements ReservationService {
 
+    private final ReservationRepository reservationRepository;
     private final PaymentService paymentService;
 
-    public ReservationServiceImpl(PaymentService paymentService) {
+    public ReservationServiceImpl(ReservationRepository reservationRepository, PaymentService paymentService) {
+        this.reservationRepository = reservationRepository;
         this.paymentService = paymentService;
     }
 
     @Override
     public Reservation createReservation(Reservation reservation) {
-        // Logique pour créer une réservation
-        // Vérifiez la disponibilité du bus, etc.
-        return reservation;
+        return reservationRepository.save(reservation);
     }
 
     @Override
     public Reservation findReservationById(Long id) {
-        // Logique pour trouver une réservation par ID
-        //return new Reservation("","","",""); // Remplacez par la recherche réelle
-        return null;
+        return reservationRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Reservation not found"));
     }
 
     @Override
     public void cancelReservation(Long id) {
-        // Logique pour annuler une réservation
+        Reservation reservation = findReservationById(id);
+        reservationRepository.delete(reservation);
     }
 
     @Override
@@ -38,11 +41,16 @@ public class ReservationServiceImpl implements ReservationService {
         if (!paymentSuccess) {
             throw new RuntimeException("Payment failed");
         }
-        // Créez une facture en fonction du résultat du paiement
         return new Bill(reservationId, paymentType);
     }
 
     @Override
     public void deleteReservation(Long id) {
+        reservationRepository.deleteById(id);
+    }
+
+    @Override
+    public List<Reservation> findReservationsByClientId(Long clientId) {
+        return reservationRepository.findByClientId(clientId);
     }
 }

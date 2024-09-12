@@ -8,7 +8,8 @@ import java.time.LocalDateTime;
 @Table(name = "reservations")
 public class ReservationEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "reservation_seq")
+    @SequenceGenerator(name = "reservation_seq", sequenceName = "reservations_seq", allocationSize = 1)
     private Long id;
     private Long clientId;
     private String busNumber;
@@ -19,15 +20,31 @@ public class ReservationEntity {
         return id;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public Long getClientId() {
         return clientId;
+    }
+
+    public void setClientId(Long clientId) {
+        this.clientId = clientId;
     }
 
     public String getBusNumber() {
         return busNumber;
     }
 
+    public void setBusNumber(String busNumber) {
+        this.busNumber = busNumber;
+    }
+
     public LocalDateTime getDateOfTravel() {
         return dateOfTravel;
+    }
+
+    public void setDateOfTravel(LocalDateTime dateOfTravel) {
+        this.dateOfTravel = dateOfTravel;
     }
 }

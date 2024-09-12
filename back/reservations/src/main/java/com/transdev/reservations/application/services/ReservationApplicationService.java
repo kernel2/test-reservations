@@ -8,6 +8,8 @@ import com.transdev.reservations.domain.ports.incoming.ReservationService;
 import com.transdev.reservations.infrastructure.adapters.persistence.reservation.ReservationMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class ReservationApplicationService {
 
@@ -28,6 +30,11 @@ public class ReservationApplicationService {
     public ReservationDTO getReservation(Long id) {
         Reservation reservation = reservationService.findReservationById(id);
         return reservationMapper.toDTO(reservation);
+    }
+
+    public List<ReservationDTO> getReservationsByClientId(Long clientId) {
+        List<Reservation> reservations = reservationService.findReservationsByClientId(clientId);
+        return reservationMapper.toDTOList(reservations);
     }
 
     public void cancelReservation(Long id) {
