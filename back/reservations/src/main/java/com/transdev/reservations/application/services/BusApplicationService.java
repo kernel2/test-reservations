@@ -4,6 +4,8 @@ import com.transdev.reservations.application.dto.BusDTO;
 import com.transdev.reservations.domain.model.Bus;
 import com.transdev.reservations.domain.ports.incoming.BusService;
 import com.transdev.reservations.infrastructure.adapters.persistence.bus.BusMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,6 +13,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class BusApplicationService {
+    private static final Logger log = LoggerFactory.getLogger(BusApplicationService.class);
 
     private final BusService busService;
     private final BusMapper busMapper;
@@ -26,9 +29,11 @@ public class BusApplicationService {
         return busMapper.toDTO(createdBus);
     }
 
-    public BusDTO getBusByNumber(String number) {
-        Bus bus = busService.getBusByNumber(number);
-        return busMapper.toDTO(bus); // Conversion vers DTO
+    public BusDTO getBusByNumber(String busNumber) {
+        Bus bus = busService.getBusByNumber(busNumber);
+        var budDTO = busMapper.toDTO(bus);
+        log.info("BusDTO getBusByNumber is :"+budDTO);
+        return budDTO;
     }
 
     public List<BusDTO> getAllBuses() {

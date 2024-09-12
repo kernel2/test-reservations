@@ -27,8 +27,6 @@ public class ReservationController {
     @GetMapping("/{id}")
     public ResponseEntity<ReservationDTO> getReservation(@PathVariable Long id) {
         ReservationDTO reservationDTO = reservationApplicationService.getReservation(id);
-        log.info("ReservationDTO in Rest control is : "+ reservationDTO);
-
         return ResponseEntity.ok(reservationDTO);
     }
 

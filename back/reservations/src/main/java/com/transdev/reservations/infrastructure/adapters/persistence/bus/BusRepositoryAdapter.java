@@ -26,10 +26,10 @@ public class BusRepositoryAdapter implements BusRepository {
     }
 
     @Override
-    public Bus findByNumber(String number) {
-        return busJpaRepository.findById(number)
-                .map(busMapper::toDomainModel)
-                .orElseThrow(() -> new RuntimeException("Bus not found for number: " + number));
+    public Bus findByNumber(String busNumber) {
+        BusEntity busEntity = busJpaRepository.findByBusNumber(busNumber)
+                .orElseThrow(() -> new RuntimeException("Bus not found for busNumber: " + busNumber));
+        return busMapper.toDomainModel(busEntity);
     }
 
     @Override

@@ -21,8 +21,8 @@ public class BusServiceImpl implements BusService {
     }
 
     @Override
-    public Bus getBusByNumber(String number) {
-        return busRepository.findByNumber(number);
+    public Bus getBusByNumber(String busNumber) {
+        return busRepository.findByNumber(busNumber);
     }
 
     @Override

@@ -2,7 +2,8 @@ package com.transdev.reservations.infrastructure.adapters.rest;
 
 import com.transdev.reservations.application.dto.BusDTO;
 import com.transdev.reservations.application.services.BusApplicationService;
-import com.transdev.reservations.domain.model.Bus;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,6 +12,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/buses")
 public class BusController {
+    private static final Logger log = LoggerFactory.getLogger(BusController.class);
 
     private final BusApplicationService busApplicationService;
 
@@ -23,9 +25,9 @@ public class BusController {
         return ResponseEntity.ok(busApplicationService.createBus(busDTO));
     }
 
-    @GetMapping("/{number}")
-    public ResponseEntity<BusDTO> getBusByNumber(@PathVariable String number) {
-        return ResponseEntity.ok(busApplicationService.getBusByNumber(number));
+    @GetMapping("/{busNumber}")
+    public ResponseEntity<BusDTO> getBusByNumber(@PathVariable String busNumber) {
+        return ResponseEntity.ok(busApplicationService.getBusByNumber(busNumber));
     }
 
     @GetMapping

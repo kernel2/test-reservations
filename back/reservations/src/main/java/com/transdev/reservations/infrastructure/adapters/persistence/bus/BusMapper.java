@@ -14,7 +14,7 @@ import org.mapstruct.ReportingPolicy;
         unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface BusMapper {
 
-    @Mapping(target = "number", ignore = false)
+    @Mapping(target = "busNumber", ignore = false)
     Bus toDomainModel(BusDTO busDTO);
 
     BusDTO toDTO(Bus bus);

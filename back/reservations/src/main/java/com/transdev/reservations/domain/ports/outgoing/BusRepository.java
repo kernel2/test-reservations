@@ -6,6 +6,6 @@ import java.util.List;
 
 public interface BusRepository {
     Bus save(Bus bus);
-    Bus findByNumber(String number);
+    Bus findByNumber(String busNumber);
     List<Bus> findAll();
 }

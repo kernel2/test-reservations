@@ -1,5 +1,6 @@
 package com.transdev.reservations.infrastructure.adapters.persistence.bus;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -12,13 +13,17 @@ import java.time.LocalTime;
 public class BusEntity {
 
     @Id
-    private String number;
+    @Column(name = "bus_number")
+    private String busNumber;
+    @Column(name = "seats")
     private int seatsPerTrip;
+    @Column(name = "departure_time")
     private LocalTime departureTime;
+    @Column(name = "price")
     private BigDecimal pricePerTrip;
 
-    public String getNumber() {
-        return number;
+    public String getBusNumber() {
+        return busNumber;
     }
 
     public int getSeatsPerTrip() {

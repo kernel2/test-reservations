@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS clients (
 
 -- Création de la table Bus
 CREATE TABLE IF NOT EXISTS buses (
-                                     number VARCHAR(255) PRIMARY KEY,
+    bus_number VARCHAR(255) PRIMARY KEY,
     seats INT NOT NULL,
     departure_time TIME NOT NULL,
     price DECIMAL(10, 2) NOT NULL
@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS reservations (
                                             date DATE NOT NULL,
                                             bus_number VARCHAR(255),
     client_id BIGINT,
-    FOREIGN KEY (bus_number) REFERENCES buses(number),
+    FOREIGN KEY (bus_number) REFERENCES buses(bus_number),
     FOREIGN KEY (client_id) REFERENCES clients(id)
     );
 
