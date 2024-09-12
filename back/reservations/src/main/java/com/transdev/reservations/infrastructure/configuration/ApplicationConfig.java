@@ -10,6 +10,7 @@ import com.transdev.reservations.domain.services.BusServiceImpl;
 import com.transdev.reservations.domain.services.ClientServiceImpl;
 import com.transdev.reservations.domain.services.ReservationServiceImpl;
 import com.transdev.reservations.infrastructure.adapters.payment.PaymentServiceImpl;
+import com.transdev.reservations.infrastructure.adapters.persistence.bus.BusJpaRepository;
 import com.transdev.reservations.infrastructure.adapters.persistence.reservation.ReservationJpaRepository;
 import com.transdev.reservations.infrastructure.adapters.persistence.reservation.ReservationMapper;
 import com.transdev.reservations.infrastructure.adapters.persistence.reservation.ReservationRepositoryAdapter;
@@ -25,8 +26,8 @@ public class ApplicationConfig {
     }
 
     @Bean
-    public ReservationRepository reservationRepository(ReservationJpaRepository reservationJpaRepository, ReservationMapper reservationMapper) {
-        return new ReservationRepositoryAdapter(reservationJpaRepository, reservationMapper);
+    public ReservationRepository reservationRepository(ReservationJpaRepository reservationJpaRepository, ReservationMapper reservationMapper, BusJpaRepository busJpaRepository) {
+        return new ReservationRepositoryAdapter(reservationJpaRepository, reservationMapper,busJpaRepository);
     }
 
     @Bean

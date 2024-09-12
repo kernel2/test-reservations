@@ -10,6 +10,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -34,16 +35,25 @@ class ReservationServiceImplTest {
 
     @Test
     void testCreateReservationWithDiscount() {
-        Reservation reservation = new Reservation(1L, LocalDateTime.now(), "BUS123", 1L);
+        // Given
+        Reservation reservation = new Reservation(1L, LocalDateTime.now(), "BUS123", 1L, BigDecimal.ZERO);
+        BigDecimal busPrice = new BigDecimal("150.00");
+        BigDecimal discountedPrice = busPrice.subtract(busPrice.multiply(new BigDecimal("0.05")));
+
         // implement getBusPrice methode in ReservationServiceImpl
-        when(reservationRepository.getBusPrice("BUS123")).thenReturn(150.0);
-        when(reservationRepository.save(any(Reservation.class))).thenReturn(reservation);
+        when(reservationRepository.getBusPrice("BUS123")).thenReturn(busPrice);
+        when(reservationRepository.save(any(Reservation.class))).thenAnswer(invocation -> {
+            Reservation res = invocation.getArgument(0);
+            return new Reservation(res.id(), res.dateOfTravel(), res.busNumber(), res.clientId(), discountedPrice);
+        });
 
         Reservation createdReservation = reservationService.createReservation(reservation);
 
         // Validate the reservation with discount applied
-        verify(reservationRepository).save(any(Reservation.class));
+        verify(reservationRepository).save(argThat(res -> res.price().equals(discountedPrice)));
         assertNotNull(createdReservation);
+        assertEquals(discountedPrice, createdReservation.price());
+
     }
 
     @Test
@@ -62,13 +72,13 @@ class ReservationServiceImplTest {
     @Test
     void testFindReservationsByClientId() {
         Long clientId = 1L;
-        Reservation reservation = new Reservation(1L, LocalDateTime.now(), "BUS123", clientId);
+        Reservation reservation = new Reservation(1L, LocalDateTime.now(), "BUS123", clientId,BigDecimal.ZERO);
         when(reservationRepository.findByClientId(clientId)).thenReturn(List.of(reservation));
 
         List<Reservation> reservations = reservationService.findReservationsByClientId(clientId);
 
         // Validate reservations are fetched correctly
         assertFalse(reservations.isEmpty());
-        assertEquals(clientId, reservations.get(0).clientId());
+        assertEquals(clientId, reservations.getFirst().clientId());
     }
 }
