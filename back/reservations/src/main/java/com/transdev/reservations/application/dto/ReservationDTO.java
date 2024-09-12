@@ -20,12 +20,20 @@ public class ReservationDTO {
         return id;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public Long getClientId() {
         return clientId;
     }
 
     public String getBusNumber() {
         return busNumber;
+    }
+
+    public void setBusNumber(String busNumber) {
+        this.busNumber = busNumber;
     }
 
     public LocalDateTime getDateOfTravel() {

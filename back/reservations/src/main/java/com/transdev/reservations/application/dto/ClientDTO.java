@@ -15,6 +15,10 @@ public class ClientDTO {
         return id;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public String getName() {
         return name;
     }
@@ -22,4 +26,5 @@ public class ClientDTO {
     public String getEmail() {
         return email;
     }
+
 }

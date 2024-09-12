@@ -2,7 +2,6 @@ package com.transdev.reservations.application.dto;
 
 import java.math.BigDecimal;
 import java.time.LocalTime;
-import java.util.Objects;
 
 public class BusDTO {
 
