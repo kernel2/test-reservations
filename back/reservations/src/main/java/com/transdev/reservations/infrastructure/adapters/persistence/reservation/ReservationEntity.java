@@ -2,6 +2,7 @@ package com.transdev.reservations.infrastructure.adapters.persistence.reservatio
 
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -14,6 +15,7 @@ public class ReservationEntity {
     private Long clientId;
     private String busNumber;
     private LocalDateTime dateOfTravel;
+    private BigDecimal price;
 
 
     public Long getId() {
@@ -46,5 +48,13 @@ public class ReservationEntity {
 
     public void setDateOfTravel(LocalDateTime dateOfTravel) {
         this.dateOfTravel = dateOfTravel;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
     }
 }

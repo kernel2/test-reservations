@@ -20,11 +20,20 @@ public interface ReservationMapper {
 
     ReservationDTO toDTO(Reservation reservation);
 
-    ReservationEntity toEntity(Reservation reservation);
-
     Reservation toDomainModel(ReservationEntity reservationEntity);
 
     List<ReservationDTO> toDTOList(List<Reservation> reservations);
 
     List<Reservation> toDomainModelList(List<ReservationEntity> reservationEntities);
+
+    // La méthode toEntity reste
+    default ReservationEntity toEntity(Reservation reservation) {
+        ReservationEntity entity = new ReservationEntity();
+        entity.setId(reservation.id());
+        entity.setDateOfTravel(reservation.dateOfTravel());
+        entity.setBusNumber(reservation.busNumber());
+        entity.setClientId(reservation.clientId());
+        entity.setPrice(reservation.price());
+        return entity;
+    }
 }
