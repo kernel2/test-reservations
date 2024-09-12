@@ -16,4 +16,19 @@ public class ReservationDTO {
         this.dateOfTravel = dateOfTravel;
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public Long getClientId() {
+        return clientId;
+    }
+
+    public String getBusNumber() {
+        return busNumber;
+    }
+
+    public LocalDateTime getDateOfTravel() {
+        return dateOfTravel;
+    }
 }

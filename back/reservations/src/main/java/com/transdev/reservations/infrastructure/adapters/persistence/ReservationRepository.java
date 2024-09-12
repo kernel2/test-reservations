@@ -1,4 +1,4 @@
-package com.transdev.reservations.infrastructure.persistence;
+package com.transdev.reservations.infrastructure.adapters.persistence;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

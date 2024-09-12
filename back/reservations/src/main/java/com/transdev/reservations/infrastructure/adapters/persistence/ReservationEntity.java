@@ -1,4 +1,4 @@
-package com.transdev.reservations.infrastructure.persistence;
+package com.transdev.reservations.infrastructure.adapters.persistence;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

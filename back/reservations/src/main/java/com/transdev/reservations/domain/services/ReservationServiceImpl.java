@@ -41,4 +41,8 @@ public class ReservationServiceImpl implements ReservationService {
         // Créez une facture en fonction du résultat du paiement
         return new Bill(reservationId, paymentType);
     }
+
+    @Override
+    public void deleteReservation(Long id) {
+    }
 }

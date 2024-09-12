@@ -9,4 +9,11 @@ public class BillDTO {
         this.paymentType = paymentType;
     }
 
+    public Long getReservationId() {
+        return reservationId;
+    }
+
+    public String getPaymentType() {
+        return paymentType;
+    }
 }

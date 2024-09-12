@@ -8,4 +8,5 @@ public interface ReservationService {
     Reservation findReservationById(Long id);
     void cancelReservation(Long id);
     Bill payReservation(Long reservationId, String paymentType);
+    void deleteReservation(Long id);
 }
