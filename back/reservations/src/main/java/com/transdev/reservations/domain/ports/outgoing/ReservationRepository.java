@@ -17,6 +17,5 @@ public interface ReservationRepository {
 
     List<Reservation> findByClientId(Long clientId);
 
-    // New method to get bus price
     BigDecimal getBusPrice(String busNumber);
 }

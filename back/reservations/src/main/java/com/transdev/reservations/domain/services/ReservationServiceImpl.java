@@ -76,15 +76,6 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
-    public Bill payReservation(Long reservationId, String paymentType) {
-        boolean paymentSuccess = paymentService.processPayment(reservationId, paymentType);
-        if (!paymentSuccess) {
-            throw new RuntimeException("Payment failed");
-        }
-        return new Bill(reservationId, paymentType);
-    }
-
-    @Override
     public void deleteReservation(Long id) {
         reservationRepository.deleteById(id);
     }

@@ -20,12 +20,13 @@ public class BillingServiceImpl implements BillingService {
 
     @Override
     public Bill payReservation(Long reservationId, String paymentType) {
-        // Logique métier pour traiter une facture
         Bill bill = new Bill(reservationId, paymentType);
-        // Appel au service de paiement
-        paymentService.processPayment(reservationId, paymentType);
-        // Sauvegarde dans le référentiel
-        return billRepository.save(bill);
+        boolean paymentSuccess = paymentService.processPayment(reservationId, paymentType);
+        if (paymentSuccess) {
+            return billRepository.save(bill);
+        } else {
+            throw new IllegalArgumentException("Payment failed");
+        }
     }
 
     @Override

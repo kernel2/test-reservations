@@ -1,9 +1,9 @@
 package com.transdev.reservations.application.services;
 
-import com.transdev.reservations.application.dto.BillDTO;
 import com.transdev.reservations.application.dto.ReservationDTO;
 import com.transdev.reservations.domain.model.Bill;
 import com.transdev.reservations.domain.model.Reservation;
+import com.transdev.reservations.domain.ports.incoming.BillingService;
 import com.transdev.reservations.domain.ports.incoming.ReservationService;
 import com.transdev.reservations.infrastructure.adapters.persistence.reservation.ReservationMapper;
 import org.springframework.stereotype.Service;
@@ -14,10 +14,12 @@ import java.util.List;
 public class ReservationApplicationService {
 
     private final ReservationService reservationService;
+    private final BillingService billingService;
     private final ReservationMapper reservationMapper;
 
-    public ReservationApplicationService(ReservationService reservationService, ReservationMapper reservationMapper) {
+    public ReservationApplicationService(ReservationService reservationService, BillingService billingService, ReservationMapper reservationMapper) {
         this.reservationService = reservationService;
+        this.billingService = billingService;
         this.reservationMapper = reservationMapper;
     }
 
@@ -41,9 +43,8 @@ public class ReservationApplicationService {
         reservationService.cancelReservation(id);
     }
 
-    public BillDTO payReservation(Long reservationId, String paymentType) {
-        Bill bill = reservationService.payReservation(reservationId, paymentType);
-        return new BillDTO(bill.reservationId(), bill.paymentType());
+    public Bill payReservation(Long reservationId, String paymentType) {
+        return billingService.payReservation(reservationId, paymentType);
     }
 
     public void deleteReservation(Long id) {

@@ -2,6 +2,7 @@ package com.transdev.reservations.domain.services;
 
 import com.transdev.reservations.domain.model.Bill;
 import com.transdev.reservations.domain.model.Reservation;
+import com.transdev.reservations.domain.ports.outgoing.BillRepository;
 import com.transdev.reservations.domain.ports.outgoing.PaymentService;
 import com.transdev.reservations.domain.ports.outgoing.ReservationRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,6 +22,12 @@ class ReservationServiceImplTest {
 
     @InjectMocks
     private ReservationServiceImpl reservationService;
+
+    @InjectMocks
+    private BillingServiceImpl billingService;
+
+    @Mock
+    private BillRepository billRepository;
 
     @Mock
     private ReservationRepository reservationRepository;
@@ -62,9 +69,15 @@ class ReservationServiceImplTest {
         String paymentType = "Credit Card";
         when(paymentService.processPayment(reservationId, paymentType)).thenReturn(true);
 
-        Bill bill = reservationService.payReservation(reservationId, paymentType);
+        Bill billMock = new Bill(reservationId, paymentType);
+        when(billRepository.save(any(Bill.class))).thenReturn(billMock);
+
+        Bill bill = billingService.payReservation(reservationId, paymentType);
+        verify(paymentService).processPayment(reservationId, paymentType);
+        verify(billRepository).save(any(Bill.class));
 
         // Validate bill creation after successful payment
+        assertNotNull(bill);
         assertEquals(reservationId, bill.reservationId());
         assertEquals(paymentType, bill.paymentType());
     }
@@ -72,7 +85,7 @@ class ReservationServiceImplTest {
     @Test
     void testFindReservationsByClientId() {
         Long clientId = 1L;
-        Reservation reservation = new Reservation(1L, LocalDateTime.now(), "BUS123", clientId,BigDecimal.ZERO);
+        Reservation reservation = new Reservation(1L, LocalDateTime.now(), "BUS123", clientId, BigDecimal.ZERO);
         when(reservationRepository.findByClientId(clientId)).thenReturn(List.of(reservation));
 
         List<Reservation> reservations = reservationService.findReservationsByClientId(clientId);

@@ -22,12 +22,12 @@ public class ApplicationConfig {
 
     @Bean
     public ReservationService reservationService(ReservationRepository reservationRepository, PaymentService paymentService) {
-        return new ReservationServiceImpl(reservationRepository,paymentService);
+        return new ReservationServiceImpl(reservationRepository, paymentService);
     }
 
     @Bean
     public ReservationRepository reservationRepository(ReservationJpaRepository reservationJpaRepository, ReservationMapper reservationMapper, BusJpaRepository busJpaRepository) {
-        return new ReservationRepositoryAdapter(reservationJpaRepository, reservationMapper,busJpaRepository);
+        return new ReservationRepositoryAdapter(reservationJpaRepository, reservationMapper, busJpaRepository);
     }
 
     @Bean

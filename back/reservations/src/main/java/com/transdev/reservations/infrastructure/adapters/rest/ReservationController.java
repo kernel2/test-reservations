@@ -1,9 +1,11 @@
 package com.transdev.reservations.infrastructure.adapters.rest;
 
+import com.transdev.reservations.application.dto.BillDTO;
 import com.transdev.reservations.application.dto.ReservationDTO;
 import com.transdev.reservations.application.services.ReservationApplicationService;
 import com.transdev.reservations.domain.exceptions.ReservationAlreadyExistsException;
 import com.transdev.reservations.domain.exceptions.ResourceNotFoundException;
+import com.transdev.reservations.domain.model.Bill;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -60,6 +62,29 @@ public class ReservationController {
             return ResponseEntity.noContent().build();
         } catch (ResourceNotFoundException ex) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
+        }
+    }
+
+    @DeleteMapping("/cancel/{id}")
+    public ResponseEntity<Void> cancelReservation(@PathVariable Long id) {
+        try {
+            reservationApplicationService.cancelReservation(id);
+            return ResponseEntity.noContent().build();
+        } catch (ResourceNotFoundException ex) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
+        }
+    }
+
+    @PostMapping("{reservationId}/pay/{paymentType}")
+    public ResponseEntity<BillDTO> payReservation(@PathVariable Long reservationId, @PathVariable String paymentType) {
+        try {
+            Bill bill = reservationApplicationService.payReservation(reservationId, paymentType);
+            BillDTO billDTO = new BillDTO(bill.reservationId(), bill.paymentType());
+            return ResponseEntity.ok(billDTO);
+        } catch (ResourceNotFoundException ex) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
+        } catch (IllegalArgumentException ex) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getMessage());
         }
     }
 }

@@ -1,7 +1,6 @@
 package com.transdev.reservations.infrastructure.adapters.persistence.reservation;
 
 import com.transdev.reservations.domain.model.Reservation;
-import com.transdev.reservations.domain.ports.outgoing.BusRepository;
 import com.transdev.reservations.domain.ports.outgoing.ReservationRepository;
 import com.transdev.reservations.infrastructure.adapters.persistence.bus.BusEntity;
 import com.transdev.reservations.infrastructure.adapters.persistence.bus.BusJpaRepository;

@@ -2,7 +2,6 @@ package com.transdev.reservations.infrastructure.adapters.persistence.bus;
 
 import com.transdev.reservations.domain.model.Bus;
 import com.transdev.reservations.domain.ports.outgoing.BusRepository;
-import com.transdev.reservations.infrastructure.adapters.rest.ClientController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -27,8 +26,6 @@ public class BusRepositoryAdapter implements BusRepository {
     @Override
     @Transactional
     public Bus save(Bus bus) {
-        log.info("BusRepositoryAdapter Bus is :" + bus);
-
         BusEntity busEntity = busMapper.toEntity(bus);
         BusEntity savedEntity = busJpaRepository.save(busEntity);
         return busMapper.toDomainModel(savedEntity);
