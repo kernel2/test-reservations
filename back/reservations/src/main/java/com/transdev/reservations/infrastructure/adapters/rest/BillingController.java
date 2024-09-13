@@ -1,9 +1,13 @@
 package com.transdev.reservations.infrastructure.adapters.rest;
 
 
+import com.transdev.reservations.domain.exceptions.ResourceNotFoundException;
 import com.transdev.reservations.domain.model.Bill;
 import com.transdev.reservations.domain.ports.incoming.BillingService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -18,17 +22,21 @@ public class BillingController {
     }
 
     @PostMapping("/pay")
-    public Bill payReservation(@RequestParam Long reservationId, @RequestParam String paymentType) {
-        return billingService.payReservation(reservationId, paymentType);
+    public ResponseEntity<Bill> payReservation(@RequestParam Long reservationId, @RequestParam String paymentType) {
+        try {
+            return ResponseEntity.status(HttpStatus.CREATED).body(billingService.payReservation(reservationId, paymentType));
+        } catch (ResourceNotFoundException ex) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
+        }
     }
 
     @GetMapping
-    public List<Bill> getAllBills() {
-        return billingService.getAllBills();
+    public ResponseEntity<List<Bill>> getAllBills() {
+        return ResponseEntity.ok(billingService.getAllBills());
     }
 
     @GetMapping("/sorted")
-    public List<Bill> getBillsSortedByAmount() {
-        return billingService.getBillsSortedByAmount();
+    public ResponseEntity<List<Bill>> getBillsSortedByAmount() {
+        return ResponseEntity.ok(billingService.getBillsSortedByAmount());
     }
 }

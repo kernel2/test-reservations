@@ -3,11 +3,13 @@ package com.transdev.reservations.infrastructure.adapters.persistence.bill;
 import com.transdev.reservations.domain.model.Bill;
 import com.transdev.reservations.domain.ports.outgoing.BillRepository;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
+@Transactional
 public class BillRepositoryAdapter implements BillRepository {
 
     private final BillJpaRepository billJpaRepository;
@@ -19,6 +21,7 @@ public class BillRepositoryAdapter implements BillRepository {
     }
 
     @Override
+    @Transactional
     public Bill save(Bill bill) {
         var billEntity = billMapper.toEntity(bill);
         var savedEntity = billJpaRepository.save(billEntity);

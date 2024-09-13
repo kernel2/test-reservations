@@ -3,6 +3,7 @@ package com.transdev.reservations.infrastructure.adapters.rest;
 import com.transdev.reservations.application.dto.ReservationDTO;
 import com.transdev.reservations.application.services.ReservationApplicationService;
 import com.transdev.reservations.domain.exceptions.ReservationAlreadyExistsException;
+import com.transdev.reservations.domain.exceptions.ResourceNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -38,8 +39,12 @@ public class ReservationController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ReservationDTO> getReservation(@PathVariable Long id) {
-        ReservationDTO reservationDTO = reservationApplicationService.getReservation(id);
-        return ResponseEntity.ok(reservationDTO);
+        try {
+            ReservationDTO reservationDTO = reservationApplicationService.getReservation(id);
+            return ResponseEntity.ok(reservationDTO);
+        } catch (ResourceNotFoundException ex) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
+        }
     }
 
     @GetMapping("/client/{clientId}")
@@ -50,7 +55,11 @@ public class ReservationController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteReservation(@PathVariable Long id) {
-        reservationApplicationService.deleteReservation(id);
-        return ResponseEntity.noContent().build();
+        try {
+            reservationApplicationService.deleteReservation(id);
+            return ResponseEntity.noContent().build();
+        } catch (ResourceNotFoundException ex) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
+        }
     }
 }

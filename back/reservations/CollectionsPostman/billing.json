@@ -1,0 +1,85 @@
+{
+  "info": {
+    "_postman_id": "b49a0e3e-64d8-4b18-8d89-d5db43c3d6c0",
+    "name": "Billing API",
+    "description": "Collection for testing Billing API endpoints",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Pay Reservation",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8080/api/bills/pay",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "bills",
+            "pay"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"reservationId\": 1,\n    \"paymentType\": \"Credit Card\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get All Bills",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost:8080/api/bills",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "bills"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Bills Sorted By Amount",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost:8080/api/bills/sorted",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "bills",
+            "sorted"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
