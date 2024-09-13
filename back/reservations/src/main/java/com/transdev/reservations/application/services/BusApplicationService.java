@@ -31,9 +31,7 @@ public class BusApplicationService {
 
     public BusDTO getBusByNumber(String busNumber) {
         Bus bus = busService.getBusByNumber(busNumber);
-        var budDTO = busMapper.toDTO(bus);
-        log.info("BusDTO getBusByNumber is :"+budDTO);
-        return budDTO;
+        return busMapper.toDTO(bus);
     }
 
     public List<BusDTO> getAllBuses() {

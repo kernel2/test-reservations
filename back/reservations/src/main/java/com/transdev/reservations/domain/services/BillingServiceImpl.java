@@ -20,9 +20,9 @@ public class BillingServiceImpl implements BillingService {
 
     @Override
     public Bill payReservation(Long reservationId, String paymentType) {
-        Bill bill = new Bill(reservationId, paymentType);
         boolean paymentSuccess = paymentService.processPayment(reservationId, paymentType);
         if (paymentSuccess) {
+            Bill bill = new Bill(reservationId, paymentType);
             return billRepository.save(bill);
         } else {
             throw new IllegalArgumentException("Payment failed");
