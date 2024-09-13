@@ -1,3 +1,11 @@
 h1 {
     margin-top: calc(35% - 50px);
 }
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.cursor-pointer:hover {
+    background-color: #f2f2f2;
+}
