@@ -2,10 +2,13 @@ package com.transdev.reservations.infrastructure.adapters.rest;
 
 import com.transdev.reservations.application.dto.ReservationDTO;
 import com.transdev.reservations.application.services.ReservationApplicationService;
+import com.transdev.reservations.domain.exceptions.ReservationAlreadyExistsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -23,8 +26,14 @@ public class ReservationController {
 
     @PostMapping
     public ResponseEntity<ReservationDTO> createReservation(@RequestBody ReservationDTO reservationDTO) {
-        ReservationDTO createdReservation = reservationApplicationService.createReservation(reservationDTO);
-        return ResponseEntity.ok(createdReservation);
+        try {
+            ReservationDTO createdReservation = reservationApplicationService.createReservation(reservationDTO);
+            return ResponseEntity.status(HttpStatus.CREATED).body(createdReservation);
+        } catch (IllegalArgumentException ex) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getMessage());
+        } catch (ReservationAlreadyExistsException ex) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
+        }
     }
 
     @GetMapping("/{id}")
