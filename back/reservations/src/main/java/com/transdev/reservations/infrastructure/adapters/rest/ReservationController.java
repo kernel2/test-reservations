@@ -3,11 +3,8 @@ package com.transdev.reservations.infrastructure.adapters.rest;
 import com.transdev.reservations.application.dto.BillDTO;
 import com.transdev.reservations.application.dto.ReservationDTO;
 import com.transdev.reservations.application.services.ReservationApplicationService;
-import com.transdev.reservations.domain.exceptions.ReservationAlreadyExistsException;
-import com.transdev.reservations.domain.exceptions.ResourceNotFoundException;
+import com.transdev.reservations.domain.exceptions.*;
 import com.transdev.reservations.domain.model.Bill;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +16,6 @@ import java.util.List;
 @RequestMapping("/api/reservations")
 public class ReservationController {
 
-    private static final Logger log = LoggerFactory.getLogger(ReservationController.class);
 
     private final ReservationApplicationService reservationApplicationService;
 
@@ -28,14 +24,18 @@ public class ReservationController {
     }
 
     @PostMapping
-    public ResponseEntity<ReservationDTO> createReservation(@RequestBody ReservationDTO reservationDTO) {
+    public ResponseEntity<?> createReservation(@RequestBody ReservationDTO reservationDTO) {
         try {
             ReservationDTO createdReservation = reservationApplicationService.createReservation(reservationDTO);
             return ResponseEntity.status(HttpStatus.CREATED).body(createdReservation);
-        } catch (IllegalArgumentException ex) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getMessage());
+        }catch (InvalidReservationException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Erreur de validation : " + ex.getMessage());
         } catch (ReservationAlreadyExistsException ex) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, ex.getMessage());
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Conflit : " + ex.getMessage());
+        } catch (BusPriceException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Erreur de prix du bus : " + ex.getMessage());
+        } catch (UnexpectedErrorException ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erreur interne du serveur : " + ex.getMessage());
         }
     }
 

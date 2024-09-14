@@ -1,12 +1,14 @@
 package com.transdev.reservations.domain.services;
 
+import com.transdev.reservations.domain.exceptions.BusPriceException;
+import com.transdev.reservations.domain.exceptions.InvalidReservationException;
 import com.transdev.reservations.domain.exceptions.ReservationAlreadyExistsException;
 import com.transdev.reservations.domain.exceptions.ResourceNotFoundException;
-import com.transdev.reservations.domain.model.Bill;
 import com.transdev.reservations.domain.model.Reservation;
+import com.transdev.reservations.domain.model.ReservationValidator;
 import com.transdev.reservations.domain.ports.incoming.ReservationService;
-import com.transdev.reservations.domain.ports.outgoing.PaymentService;
 import com.transdev.reservations.domain.ports.outgoing.ReservationRepository;
+
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -16,15 +18,14 @@ import java.util.Optional;
 public class ReservationServiceImpl implements ReservationService {
 
     private final ReservationRepository reservationRepository;
-    private final PaymentService paymentService;
 
-    public ReservationServiceImpl(ReservationRepository reservationRepository, PaymentService paymentService) {
+    public ReservationServiceImpl(ReservationRepository reservationRepository) {
         this.reservationRepository = reservationRepository;
-        this.paymentService = paymentService;
     }
 
     @Override
     public Reservation createReservation(Reservation reservation) {
+        ReservationValidator.validate(reservation);
         Optional<Reservation> existingReservation = findExistingReservation(
                 reservation.clientId(),
                 reservation.busNumber(),
@@ -38,11 +39,24 @@ public class ReservationServiceImpl implements ReservationService {
         // Check if any bus price is greater than 100 for discount
         // Assume getBusPrice() is a method in ReservationRepository to get the price
         BigDecimal busPrice = reservationRepository.getBusPrice(reservation.busNumber());
+
+        if (busPrice == null || busPrice.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new BusPriceException("Le prix du bus est introuvable ou NULL ou 0.00 pour le numéro de bus : " + reservation.busNumber());
+        }
+
         boolean hasDiscount = busPrice.compareTo(new BigDecimal("100")) > 0;
 
-        Reservation reservationWithDiscount = hasDiscount
-                ? applyDiscount(reservation, busPrice)
-                : reservation;
+        Reservation reservationWithDiscount;
+        if (hasDiscount) {
+            reservationWithDiscount = applyDiscount(reservation, busPrice);
+        } else {
+            if (reservation.price() == null || reservation.price().compareTo(BigDecimal.ZERO) <= 0) {
+                reservationWithDiscount = new Reservation(reservation.id(), reservation.dateOfTravel(), reservation.busNumber(), reservation.clientId(), busPrice);
+            } else {
+                reservationWithDiscount = reservation;
+            }
+        }
+
         return reservationRepository.save(reservationWithDiscount);
     }
 
@@ -60,7 +74,8 @@ public class ReservationServiceImpl implements ReservationService {
         BigDecimal discountedPrice = busPrice.subtract(discountAmount);
 
         // Return a new reservation with updated price
-        return reservation.withPrice(discountedPrice);
+        return new Reservation(reservation.id(), reservation.dateOfTravel(),
+                reservation.busNumber(), reservation.clientId(), discountedPrice);
     }
 
     @Override

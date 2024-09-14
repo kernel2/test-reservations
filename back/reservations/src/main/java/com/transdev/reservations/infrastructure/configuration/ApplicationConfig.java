@@ -21,8 +21,8 @@ import org.springframework.context.annotation.Configuration;
 public class ApplicationConfig {
 
     @Bean
-    public ReservationService reservationService(ReservationRepository reservationRepository, PaymentService paymentService) {
-        return new ReservationServiceImpl(reservationRepository, paymentService);
+    public ReservationService reservationService(ReservationRepository reservationRepository) {
+        return new ReservationServiceImpl(reservationRepository);
     }
 
     @Bean

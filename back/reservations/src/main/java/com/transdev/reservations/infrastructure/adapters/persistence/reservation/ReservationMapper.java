@@ -16,6 +16,7 @@ import java.util.List;
 public interface ReservationMapper {
 
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "price", ignore = true)
     Reservation toDomainModel(ReservationDTO reservationDTO);
 
     ReservationDTO toDTO(Reservation reservation);

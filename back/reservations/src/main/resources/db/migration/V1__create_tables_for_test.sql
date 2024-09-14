@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS reservations (
                                             bus_number VARCHAR(255) NOT NULL,
     client_id BIGINT NOT NULL,
     date_of_travel TIMESTAMP NOT NULL,
-    price DECIMAL(10, 2) NOT NULL,  -- Ajout de la colonne 'price' pour stocker le prix
+    price DECIMAL(10, 2) NOT NULL,
     FOREIGN KEY (bus_number) REFERENCES buses(bus_number) ON DELETE CASCADE,  -- Cascade suppression si le bus est supprimé
     FOREIGN KEY (client_id) REFERENCES clients(id) ON DELETE CASCADE          -- Cascade suppression si le client est supprimé
     );

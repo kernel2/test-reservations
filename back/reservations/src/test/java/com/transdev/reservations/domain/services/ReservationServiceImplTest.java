@@ -61,6 +61,12 @@ class ReservationServiceImplTest {
         assertNotNull(createdReservation);
         assertEquals(discountedPrice, createdReservation.price());
 
+        // 2eme test discount with newPrice reservations
+        Reservation reservation1 = new Reservation(null, LocalDateTime.now(), "BUS123", 1L, null);
+        when(reservationRepository.getBusPrice("BUS123")).thenReturn(new BigDecimal("120.00"));
+        Reservation createdReservation1 = reservationService.createReservation(reservation1);
+        assertNotNull(createdReservation1);
+        assertEquals(new BigDecimal("114.00"), createdReservation.price()); // 5% de réduction appliquée
     }
 
     @Test
