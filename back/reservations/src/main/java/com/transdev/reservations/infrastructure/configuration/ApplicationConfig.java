@@ -1,14 +1,12 @@
 package com.transdev.reservations.infrastructure.configuration;
 
+import com.transdev.reservations.domain.services.ReservationValidatorServiceImpl;
 import com.transdev.reservations.domain.ports.incoming.BillingService;
 import com.transdev.reservations.domain.ports.incoming.BusService;
 import com.transdev.reservations.domain.ports.incoming.ClientService;
 import com.transdev.reservations.domain.ports.incoming.ReservationService;
 import com.transdev.reservations.domain.ports.outgoing.*;
-import com.transdev.reservations.domain.services.BillingServiceImpl;
-import com.transdev.reservations.domain.services.BusServiceImpl;
-import com.transdev.reservations.domain.services.ClientServiceImpl;
-import com.transdev.reservations.domain.services.ReservationServiceImpl;
+import com.transdev.reservations.domain.services.*;
 import com.transdev.reservations.infrastructure.adapters.payment.PaymentServiceImpl;
 import com.transdev.reservations.infrastructure.adapters.persistence.bus.BusJpaRepository;
 import com.transdev.reservations.infrastructure.adapters.persistence.reservation.ReservationJpaRepository;
@@ -21,8 +19,8 @@ import org.springframework.context.annotation.Configuration;
 public class ApplicationConfig {
 
     @Bean
-    public ReservationService reservationService(ReservationRepository reservationRepository) {
-        return new ReservationServiceImpl(reservationRepository);
+    public ReservationService reservationService(ReservationRepository reservationRepository, ReservationValidatorService reservationValidatorService, DiscountService discountService) {
+        return new ReservationServiceImpl(reservationRepository, reservationValidatorService, discountService);
     }
 
     @Bean
@@ -49,4 +47,16 @@ public class ApplicationConfig {
     public BillingService billingService(PaymentService paymentService, BillRepository billRepository) {
         return new BillingServiceImpl(paymentService, billRepository);
     }
+
+    @Bean
+    public DiscountService discountService() {
+        return new DiscountServiceImpl();
+    }
+
+    @Bean
+    public ReservationValidatorServiceImpl reservationValidatorService() {
+        return new ReservationValidatorServiceImpl();
+    }
+
+
 }

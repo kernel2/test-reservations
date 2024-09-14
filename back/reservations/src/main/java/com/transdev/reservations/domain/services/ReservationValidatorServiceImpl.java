@@ -1,10 +1,10 @@
-package com.transdev.reservations.domain.model;
+package com.transdev.reservations.domain.services;
 
 import com.transdev.reservations.domain.exceptions.InvalidReservationException;
+import com.transdev.reservations.domain.model.Reservation;
+import com.transdev.reservations.domain.ports.outgoing.ReservationValidatorService;
 
-import java.math.BigDecimal;
-
-public class ReservationValidator {
+public class ReservationValidatorServiceImpl implements ReservationValidatorService {
 
     private enum ValidationErrorType {
         DATE_NULL,
@@ -13,7 +13,8 @@ public class ReservationValidator {
         VALID
     }
 
-    public static void validate(Reservation reservation) {
+    @Override
+    public void validate(Reservation reservation) {
         StringBuilder errorMessage = new StringBuilder();
 
         ValidationErrorType errorType = checkReservationFields(reservation);
@@ -34,7 +35,7 @@ public class ReservationValidator {
         }
     }
 
-    private static ValidationErrorType checkReservationFields(Reservation reservation) {
+    private ValidationErrorType checkReservationFields(Reservation reservation) {
         if (reservation.dateOfTravel() == null) {
             return ValidationErrorType.DATE_NULL;
         }
