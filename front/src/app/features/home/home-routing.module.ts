@@ -1,7 +1,8 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './home.component';
-import { ReservationDetailsComponent } from './reservation-details/reservation-details.component';
+import { ReservationDetailsComponent } from '../reservations/reservation-details/reservation-details.component';
+import { ReservationResolver } from '../reservations/reservation.resolver';
 
 const routes: Routes = [
   { 
@@ -10,7 +11,10 @@ const routes: Routes = [
   },
   { 
     path: 'reservation/:id', 
-    component: ReservationDetailsComponent
+    component: ReservationDetailsComponent,
+    resolve: {
+      reservation: ReservationResolver
+    }
   }
 ];
 
