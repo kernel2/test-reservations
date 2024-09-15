@@ -1,7 +1,5 @@
 package com.transdev.reservations.domain.services;
 
-import com.transdev.reservations.application.dto.TripDTO;
-import com.transdev.reservations.domain.exceptions.TripAlreadyExistsException;
 import com.transdev.reservations.domain.model.Bus;
 import com.transdev.reservations.domain.model.Trip;
 import com.transdev.reservations.domain.ports.incoming.BusService;
@@ -34,10 +32,7 @@ public class BusServiceImpl implements BusService {
     }
 
     @Override
-    public List<Trip> getTripsByBusAndDate(String busNumber, LocalDateTime travelDate) {
-        if (busRepository.existsTripOnDate(busNumber, travelDate)) {
-            throw new TripAlreadyExistsException("A trip already exists for bus " + busNumber + " on " + travelDate);
-        }
-        return busRepository.findTripsByBusAndDate(busNumber, travelDate);
+    public List<Trip> getTripsByBusAndDate(String busNumber, LocalDateTime dateStart, LocalDateTime dateEnd) {
+        return busRepository.findTripsByBusAndDate(busNumber, dateStart, dateEnd);
     }
 }

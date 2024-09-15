@@ -10,6 +10,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/bills")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class BillingController {
 
     private final BillingService billingService;

@@ -11,7 +11,5 @@ public interface BusRepository {
     Bus findByNumber(String busNumber);
     List<Bus> findAll();
 
-    boolean existsTripOnDate(String busNumber, LocalDateTime travelDate);
-    List<Trip> findTripsByBusAndDate(String busNumber, LocalDateTime travelDate);
-
+    List<Trip> findTripsByBusAndDate(String busNumber, LocalDateTime dateStart, LocalDateTime dateEnd);
 }

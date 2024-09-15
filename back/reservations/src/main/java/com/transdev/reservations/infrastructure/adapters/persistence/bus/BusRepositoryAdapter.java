@@ -60,13 +60,8 @@ public class BusRepositoryAdapter implements BusRepository {
     }
 
     @Override
-    public boolean existsTripOnDate(String busNumber, LocalDateTime travelDate) {
-        return tripJpaRepository.existsByBusNumberAndDateOfTravel(busNumber, travelDate);
-    }
-
-    @Override
-    public List<Trip> findTripsByBusAndDate(String busNumber, LocalDateTime travelDate) {
-        List<TripEntity> tripEntities = tripJpaRepository.findByBusNumberAndDateOfTravel(busNumber, travelDate);
+    public List<Trip> findTripsByBusAndDate(String busNumber, LocalDateTime dateStart, LocalDateTime dateEnd) {
+        List<TripEntity> tripEntities = tripJpaRepository.findByBusNumberAndDateOfTravelBetween(busNumber, dateStart, dateEnd);
         return tripEntities.stream()
                 .map(tripMapper::toDomainModel)
                 .toList();

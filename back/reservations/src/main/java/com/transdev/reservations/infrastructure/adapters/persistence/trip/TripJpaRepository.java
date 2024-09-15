@@ -8,7 +8,5 @@ import java.util.List;
 
 @Repository
 public interface TripJpaRepository extends JpaRepository<TripEntity, Long> {
-    boolean existsByBusNumberAndDateOfTravel(String busNumber, LocalDateTime travelDate);
-
-    List<TripEntity> findByBusNumberAndDateOfTravel(String busNumber, LocalDateTime travelDate);
+    List<TripEntity> findByBusNumberAndDateOfTravelBetween(String busNumber, LocalDateTime dateStart, LocalDateTime dateEnd);
 }

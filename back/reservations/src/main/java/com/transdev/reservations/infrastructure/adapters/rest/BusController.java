@@ -3,15 +3,18 @@ package com.transdev.reservations.infrastructure.adapters.rest;
 import com.transdev.reservations.application.dto.BusDTO;
 import com.transdev.reservations.application.dto.TripDTO;
 import com.transdev.reservations.application.services.BusApplicationService;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/buses")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class BusController {
 
     private final BusApplicationService busApplicationService;
@@ -38,9 +41,11 @@ public class BusController {
     @GetMapping("/{busNumber}/trips")
     public ResponseEntity<List<TripDTO>> getTripsByBusAndDate(
             @PathVariable String busNumber,
-            @RequestParam("date") String travelDate) {
-        LocalDateTime date = LocalDateTime.parse(travelDate); // Parse la date à partir du paramètre
-        List<TripDTO> trips = busApplicationService.getTripsByBusAndDate(busNumber, date);
+            @RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate travelDate) {
+        // Convertir LocalDate en LocalDateTime à minuit pour simplifier la gestion de la date
+        LocalDateTime dateStart = travelDate.atStartOfDay();
+        LocalDateTime dateEnd = travelDate.atTime(23, 59, 59); // End of the day
+        List<TripDTO> trips = busApplicationService.getTripsByBusAndDate(busNumber, dateStart, dateEnd);
         return ResponseEntity.ok(trips);
     }
 }

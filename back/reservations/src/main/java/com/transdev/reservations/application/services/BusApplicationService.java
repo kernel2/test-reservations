@@ -42,8 +42,8 @@ public class BusApplicationService {
                 .toList();
     }
 
-    public List<TripDTO> getTripsByBusAndDate(String busNumber, LocalDateTime travelDate) {
-        List<Trip> trips = busService.getTripsByBusAndDate(busNumber, travelDate);
+    public List<TripDTO> getTripsByBusAndDate(String busNumber, LocalDateTime dateStart, LocalDateTime dateEnd) {
+        List<Trip> trips = busService.getTripsByBusAndDate(busNumber, dateStart, dateEnd);
         return trips.stream()
                 .map(tripMapper::toDTO)
                 .toList();

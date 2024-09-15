@@ -11,6 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/clients")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class ClientController {
 
     private final ClientApplicationService clientApplicationService;

@@ -13,6 +13,6 @@ public interface BusService {
 
     List<Bus> getAllBuses();
 
-    List<Trip> getTripsByBusAndDate(String busNumber, LocalDateTime travelDate);
+    List<Trip> getTripsByBusAndDate(String busNumber, LocalDateTime dateStart, LocalDateTime dateEnd);
 
 }
