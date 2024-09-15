@@ -4,11 +4,13 @@ import com.transdev.reservations.domain.exceptions.ResourceAlreadyExistsExceptio
 import com.transdev.reservations.domain.exceptions.ResourceNotFoundException;
 import com.transdev.reservations.domain.model.Bus;
 import com.transdev.reservations.domain.ports.outgoing.BusRepository;
+import com.transdev.reservations.infrastructure.adapters.persistence.trip.TripJpaRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Component
@@ -18,10 +20,12 @@ public class BusRepositoryAdapter implements BusRepository {
 
     private final BusJpaRepository busJpaRepository;
     private final BusMapper busMapper;
+    private final TripJpaRepository tripJpaRepository;
 
-    public BusRepositoryAdapter(BusJpaRepository busJpaRepository, BusMapper busMapper) {
+    public BusRepositoryAdapter(BusJpaRepository busJpaRepository, BusMapper busMapper, TripJpaRepository tripJpaRepository) {
         this.busJpaRepository = busJpaRepository;
         this.busMapper = busMapper;
+        this.tripJpaRepository = tripJpaRepository;
     }
 
     @Override
@@ -48,5 +52,10 @@ public class BusRepositoryAdapter implements BusRepository {
                 .stream()
                 .map(busMapper::toDomainModel)
                 .toList();
+    }
+
+    @Override
+    public boolean existsTripOnDate(String busNumber, LocalDateTime travelDate) {
+        return tripJpaRepository.existsByBusNumberAndDateOfTravel(busNumber, travelDate);
     }
 }

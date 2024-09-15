@@ -1,14 +1,14 @@
 package com.transdev.reservations.application.dto;
 
 import java.math.BigDecimal;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 
 public class BusDTO {
 
 
     private String busNumber;
     private int seatsPerTrip;
-    private LocalTime departureTime;
+    private LocalDateTime departureTime;
     private BigDecimal pricePerTrip;
 
     public BusDTO() {
@@ -31,11 +31,11 @@ public class BusDTO {
         this.seatsPerTrip = seatsPerTrip;
     }
 
-    public LocalTime getDepartureTime() {
+    public LocalDateTime getDepartureTime() {
         return departureTime;
     }
 
-    public void setDepartureTime(LocalTime departureTime) {
+    public void setDepartureTime(LocalDateTime departureTime) {
         this.departureTime = departureTime;
     }
 

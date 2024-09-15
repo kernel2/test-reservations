@@ -6,7 +6,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 import java.math.BigDecimal;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "Buses")
@@ -18,7 +18,7 @@ public class BusEntity {
     @Column(name = "seats")
     private int seatsPerTrip;
     @Column(name = "departure_time")
-    private LocalTime departureTime;
+    private LocalDateTime departureTime;
     @Column(name = "price")
     private BigDecimal pricePerTrip;
 
@@ -38,11 +38,11 @@ public class BusEntity {
         this.seatsPerTrip = seatsPerTrip;
     }
 
-    public LocalTime getDepartureTime() {
+    public LocalDateTime getDepartureTime() {
         return departureTime;
     }
 
-    public void setDepartureTime(LocalTime departureTime) {
+    public void setDepartureTime(LocalDateTime departureTime) {
         this.departureTime = departureTime;
     }
 
