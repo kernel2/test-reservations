@@ -1,16 +1,14 @@
 package com.transdev.reservations.domain.services;
 
-import com.transdev.reservations.domain.exceptions.BusPriceException;
 import com.transdev.reservations.domain.exceptions.ReservationAlreadyExistsException;
 import com.transdev.reservations.domain.exceptions.ResourceNotFoundException;
 import com.transdev.reservations.domain.model.Reservation;
+import com.transdev.reservations.domain.model.Trip;
 import com.transdev.reservations.domain.ports.incoming.ReservationService;
 import com.transdev.reservations.domain.ports.outgoing.DiscountService;
 import com.transdev.reservations.domain.ports.outgoing.ReservationRepository;
 import com.transdev.reservations.domain.ports.outgoing.ReservationValidatorService;
 
-
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -36,41 +34,40 @@ public class ReservationServiceImpl implements ReservationService {
         // Check for existing reservation
         checkForExistingReservation(reservation);
 
-        // Check if any bus price is greater than 100 for discount
-        // Assume getBusPrice() is a method in ReservationRepository to get the price
-        // Fetch bus price
-        BigDecimal busPrice = getBusPrice(reservation.busNumber());
+        // Apply discounts to each trip
+        List<Trip> tripsWithDiscount = discountService.applyDiscountsToTrips(reservation.trips());
 
-        // Apply discount if applicable
-        Reservation reservationWithDiscount = discountService.applyDiscountToReservation(reservation, busPrice);
+        // Create a new reservation with discounted trips
+        Reservation reservationWithDiscount = new Reservation(
+                reservation.id(),
+                reservation.clientId(),
+                tripsWithDiscount
+        );
 
         return reservationRepository.save(reservationWithDiscount);
     }
 
     private void checkForExistingReservation(Reservation reservation) {
-        Optional<Reservation> existingReservation = findExistingReservation(
-                reservation.clientId(),
-                reservation.busNumber(),
-                reservation.dateOfTravel()
-        );
+        // Check if any of the trips already exist for the client
+        for (Trip trip : reservation.trips()) {
+            Optional<Reservation> existingReservation = findExistingReservation(
+                    reservation.clientId(),
+                    trip.busNumber(),
+                    trip.dateOfTravel()
+            );
 
-        if (existingReservation.isPresent()) {
-            throw new ReservationAlreadyExistsException("Le client a déjà réservé ce trajet pour cette date.");
+            if (existingReservation.isPresent()) {
+                throw new ReservationAlreadyExistsException("Le client a déjà réservé ce trajet pour cette date.");
+            }
         }
-    }
-
-    private BigDecimal getBusPrice(String busNumber) {
-        BigDecimal busPrice = reservationRepository.getBusPrice(busNumber);
-        if (busPrice == null || busPrice.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new BusPriceException("Le prix du bus est introuvable ou invalide pour le numéro de bus : " + busNumber);
-        }
-        return busPrice;
     }
 
     private Optional<Reservation> findExistingReservation(Long clientId, String busNumber, LocalDateTime dateOfTravel) {
         List<Reservation> existingReservations = reservationRepository.findByClientId(clientId);
         return existingReservations.stream()
-                .filter(r -> r.busNumber().equals(busNumber) && r.dateOfTravel().equals(dateOfTravel))
+                .filter(r -> r.trips().stream()
+                        .anyMatch(trip -> trip.busNumber().equals(busNumber) && trip.dateOfTravel().equals(dateOfTravel))
+                )
                 .findFirst();
     }
 

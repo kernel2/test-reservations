@@ -2,7 +2,6 @@ package com.transdev.reservations.domain.ports.outgoing;
 
 import com.transdev.reservations.domain.model.Reservation;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,5 +16,4 @@ public interface ReservationRepository {
 
     List<Reservation> findByClientId(Long clientId);
 
-    BigDecimal getBusPrice(String busNumber);
 }

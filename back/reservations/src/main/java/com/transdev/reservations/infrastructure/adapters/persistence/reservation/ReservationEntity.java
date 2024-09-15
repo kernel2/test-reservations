@@ -1,22 +1,23 @@
 package com.transdev.reservations.infrastructure.adapters.persistence.reservation;
 
+import com.transdev.reservations.infrastructure.adapters.persistence.trip.TripEntity;
 import jakarta.persistence.*;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "reservations")
 public class ReservationEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "reservation_seq")
     @SequenceGenerator(name = "reservation_seq", sequenceName = "reservations_seq", allocationSize = 1)
     private Long id;
-    private Long clientId;
-    private String busNumber;
-    private LocalDateTime dateOfTravel;
-    private BigDecimal price;
 
+    private Long clientId;
+
+    @OneToMany(mappedBy = "reservation", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TripEntity> trips;
 
     public Long getId() {
         return id;
@@ -34,27 +35,11 @@ public class ReservationEntity {
         this.clientId = clientId;
     }
 
-    public String getBusNumber() {
-        return busNumber;
+    public List<TripEntity> getTrips() {
+        return trips;
     }
 
-    public void setBusNumber(String busNumber) {
-        this.busNumber = busNumber;
-    }
-
-    public LocalDateTime getDateOfTravel() {
-        return dateOfTravel;
-    }
-
-    public void setDateOfTravel(LocalDateTime dateOfTravel) {
-        this.dateOfTravel = dateOfTravel;
-    }
-
-    public BigDecimal getPrice() {
-        return price;
-    }
-
-    public void setPrice(BigDecimal price) {
-        this.price = price;
+    public void setTrips(List<TripEntity> trips) {
+        this.trips = trips;
     }
 }

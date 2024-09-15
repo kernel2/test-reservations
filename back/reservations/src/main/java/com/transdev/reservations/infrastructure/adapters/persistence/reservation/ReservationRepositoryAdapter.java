@@ -2,14 +2,12 @@ package com.transdev.reservations.infrastructure.adapters.persistence.reservatio
 
 import com.transdev.reservations.domain.model.Reservation;
 import com.transdev.reservations.domain.ports.outgoing.ReservationRepository;
-import com.transdev.reservations.infrastructure.adapters.persistence.bus.BusEntity;
-import com.transdev.reservations.infrastructure.adapters.persistence.bus.BusJpaRepository;
+import com.transdev.reservations.infrastructure.adapters.persistence.trip.TripEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,18 +18,21 @@ public class ReservationRepositoryAdapter implements ReservationRepository {
 
     private final ReservationJpaRepository reservationJpaRepository;
     private final ReservationMapper reservationMapper;
-    private final BusJpaRepository busJpaRepository;
 
-    public ReservationRepositoryAdapter(ReservationJpaRepository reservationJpaRepository, ReservationMapper reservationMapper, BusJpaRepository busJpaRepository) {
+    public ReservationRepositoryAdapter(ReservationJpaRepository reservationJpaRepository, ReservationMapper reservationMapper) {
         this.reservationJpaRepository = reservationJpaRepository;
         this.reservationMapper = reservationMapper;
-        this.busJpaRepository = busJpaRepository;
     }
 
     @Override
     @Transactional
     public Reservation save(Reservation reservation) {
         ReservationEntity entity = reservationMapper.toEntity(reservation);
+        if (entity.getTrips() != null) {
+            for (TripEntity tripEntity : entity.getTrips()) {
+                tripEntity.setReservation(entity);
+            }
+        }
         ReservationEntity savedEntity = reservationJpaRepository.save(entity);
         return reservationMapper.toDomainModel(savedEntity);
     }
@@ -57,12 +58,5 @@ public class ReservationRepositoryAdapter implements ReservationRepository {
     public List<Reservation> findByClientId(Long clientId) {
         List<ReservationEntity> entities = reservationJpaRepository.findByClientId(clientId);
         return reservationMapper.toDomainModelList(entities);
-    }
-
-    @Override
-    public BigDecimal getBusPrice(String busNumber) {
-        return busJpaRepository.findByBusNumber(busNumber)
-                .map(BusEntity::getPricePerTrip)
-                .orElse(BigDecimal.ZERO); // Return zero if bus not found
     }
 }

@@ -1,24 +1,20 @@
 package com.transdev.reservations.application.dto;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.util.List;
 
 public class ReservationDTO {
     private Long id;
     private Long clientId;
-    private String busNumber;
-    private LocalDateTime dateOfTravel;
-    private BigDecimal price;
+    private List<TripDTO> trips;
 
     public ReservationDTO() {
     }
 
-    public ReservationDTO(Long id, Long clientId, String busNumber, LocalDateTime dateOfTravel, BigDecimal price) {
+    public ReservationDTO(Long id, Long clientId, List<TripDTO> trips) {
         this.id = id;
         this.clientId = clientId;
-        this.busNumber = busNumber;
-        this.dateOfTravel = dateOfTravel;
-        this.price = price;
+        this.trips = trips;
     }
 
     public Long getId() {
@@ -37,28 +33,18 @@ public class ReservationDTO {
         this.clientId = clientId;
     }
 
-    public String getBusNumber() {
-        return busNumber;
+    public List<TripDTO> getTrips() {
+        return trips;
     }
 
-    public void setBusNumber(String busNumber) {
-        this.busNumber = busNumber;
+    public void setTrips(List<TripDTO> trips) {
+        this.trips = trips;
     }
 
-    public LocalDateTime getDateOfTravel() {
-        return dateOfTravel;
-    }
-
-    public void setDateOfTravel(LocalDateTime dateOfTravel) {
-        this.dateOfTravel = dateOfTravel;
-    }
-
-    public BigDecimal getPrice() {
-        return price;
-    }
-
-    public void setPrice(BigDecimal price) {
-        this.price = price;
+    public BigDecimal getTotalPrice() {
+        return trips.stream()
+                .map(TripDTO::getPrice)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
     @Override
@@ -66,9 +52,7 @@ public class ReservationDTO {
         return "ReservationDTO{" +
                 "id=" + id +
                 ", clientId=" + clientId +
-                ", busNumber='" + busNumber + '\'' +
-                ", dateOfTravel=" + dateOfTravel +
-                ", price=" + price +
+                ", trips=" + trips +
                 '}';
     }
 }

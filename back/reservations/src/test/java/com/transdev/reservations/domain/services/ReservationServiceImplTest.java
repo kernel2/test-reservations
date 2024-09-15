@@ -1,8 +1,11 @@
 package com.transdev.reservations.domain.services;
 
 import com.transdev.reservations.domain.exceptions.BusPriceException;
+import com.transdev.reservations.domain.exceptions.ReservationAlreadyExistsException;
 import com.transdev.reservations.domain.model.Bill;
 import com.transdev.reservations.domain.model.Reservation;
+import com.transdev.reservations.domain.model.Trip;
+import com.transdev.reservations.domain.ports.incoming.BillingService;
 import com.transdev.reservations.domain.ports.outgoing.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,7 +14,9 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -48,122 +53,140 @@ class ReservationServiceImplTest {
     @Test
     void testCreateReservationWithDiscount() {
         // Given
-        Reservation reservation = new Reservation(1L, LocalDateTime.now(), "BUS123", 1L, BigDecimal.ZERO);
+        Trip trip = new Trip(null, "BUS123", LocalDateTime.now(), null);
+        List<Trip> trips = List.of(trip);
+        Reservation reservation = new Reservation(null, 1L, trips);
+
         BigDecimal busPrice = new BigDecimal("150.00");
         BigDecimal discountedPrice = busPrice.subtract(busPrice.multiply(new BigDecimal("0.05")));
+        discountedPrice = discountedPrice.setScale(2, RoundingMode.HALF_UP);
 
-        // implement getBusPrice methode in ReservationServiceImpl
-        when(reservationRepository.getBusPrice("BUS123")).thenReturn(busPrice);
-        when(discountService.applyDiscountToReservation(any(Reservation.class), eq(busPrice)))
-                .thenAnswer(invocation -> {
-                    Reservation res = invocation.getArgument(0);
-                    return new Reservation(res.id(), res.dateOfTravel(), res.busNumber(), res.clientId(), discountedPrice);
-                });
-        when(reservationRepository.save(any(Reservation.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        // Mock discountService to return trips with discounted prices
+        Trip discountedTrip = new Trip(null, "BUS123", trip.dateOfTravel(), discountedPrice);
+        List<Trip> discountedTrips = List.of(discountedTrip);
 
-        // Check Reservation Fields
+        when(discountService.applyDiscountsToTrips(anyList())).thenReturn(discountedTrips);
+
+        // Mock reservationRepository.save to return a saved reservation
+        Reservation savedReservation = new Reservation(1L, 1L, discountedTrips);
+        when(reservationRepository.save(any(Reservation.class))).thenReturn(savedReservation);
+
+        // Mock reservationValidatorService.validate to do nothing
         doNothing().when(reservationValidatorService).validate(any(Reservation.class));
+
+        // Mock reservationRepository.findByClientId to return empty list (no existing reservations)
+        when(reservationRepository.findByClientId(1L)).thenReturn(Collections.emptyList());
 
         // When
         Reservation createdReservation = reservationService.createReservation(reservation);
 
-        // Validate the reservation with discount applied
-        verify(reservationRepository).save(argThat(res -> res.price().equals(discountedPrice)));
+        // Then
+        verify(reservationValidatorService).validate(any(Reservation.class));
+        verify(discountService).applyDiscountsToTrips(anyList());
+        verify(reservationRepository).save(any(Reservation.class));
+
         assertNotNull(createdReservation);
-        assertEquals(discountedPrice, createdReservation.price());
+        assertEquals(1L, createdReservation.id());
+        assertEquals(1L, createdReservation.clientId());
+        assertNotNull(createdReservation.trips());
+        assertEquals(1, createdReservation.trips().size());
+        Trip createdTrip = createdReservation.trips().getFirst();
+        assertEquals("BUS123", createdTrip.busNumber());
+        assertEquals(discountedPrice, createdTrip.price());
     }
 
     @Test
     void testCreateReservationWithoutDiscountAt100() {
         // Given
-        Reservation reservation = new Reservation(1L, LocalDateTime.now(), "BUS123", 1L, BigDecimal.ZERO);
+        Trip trip = new Trip(null, "BUS123", LocalDateTime.now(), null);
+        List<Trip> trips = List.of(trip);
+        Reservation reservation = new Reservation(null, 1L, trips);
+
         BigDecimal busPrice = new BigDecimal("100.00");
+        BigDecimal expectedPrice = busPrice.setScale(2, RoundingMode.HALF_UP);
 
-        // implement getBusPrice method in ReservationServiceImpl
-        when(reservationRepository.getBusPrice("BUS123")).thenReturn(busPrice);
-        when(discountService.applyDiscountToReservation(any(Reservation.class), eq(busPrice)))
-                .thenAnswer(invocation -> {
-                    Reservation res = invocation.getArgument(0);
-                    return new Reservation(res.id(), res.dateOfTravel(), res.busNumber(), res.clientId(), busPrice);
-                });
-        when(reservationRepository.save(any(Reservation.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        // Mock discountService to return trips without discount
+        Trip tripWithPrice = new Trip(null, "BUS123", trip.dateOfTravel(), expectedPrice);
+        List<Trip> tripsWithPrice = List.of(tripWithPrice);
 
-        // Check Reservation Fields
+        when(discountService.applyDiscountsToTrips(anyList())).thenReturn(tripsWithPrice);
+
+        // Mock reservationRepository.save
+        Reservation savedReservation = new Reservation(1L, 1L, tripsWithPrice);
+        when(reservationRepository.save(any(Reservation.class))).thenReturn(savedReservation);
+
+        // Mock reservationValidatorService.validate
         doNothing().when(reservationValidatorService).validate(any(Reservation.class));
+
+        // Mock reservationRepository.findByClientId
+        when(reservationRepository.findByClientId(1L)).thenReturn(Collections.emptyList());
 
         // When
         Reservation createdReservation = reservationService.createReservation(reservation);
 
-        // Then: Verify no discount is applied
-        verify(reservationRepository).save(argThat(res -> res.price().compareTo(busPrice) == 0));
+        // Then
+        verify(reservationValidatorService).validate(any(Reservation.class));
+        verify(discountService).applyDiscountsToTrips(anyList());
+        verify(reservationRepository).save(any(Reservation.class));
+
         assertNotNull(createdReservation);
-        assertEquals(busPrice, createdReservation.price());
+        assertEquals(expectedPrice, createdReservation.trips().getFirst().price());
     }
 
     @Test
     void testCreateReservationWithoutDiscountBelow100() {
         // Given
-        Reservation reservation = new Reservation(1L, LocalDateTime.now(), "BUS123", 1L, BigDecimal.ZERO);
+        Trip trip = new Trip(null, "BUS123", LocalDateTime.now(), null);
+        List<Trip> trips = List.of(trip);
+        Reservation reservation = new Reservation(null, 1L, trips);
+
         BigDecimal busPrice = new BigDecimal("99.90");
+        BigDecimal expectedPrice = busPrice.setScale(2, RoundingMode.HALF_UP);
 
-        // implement getBusPrice method in ReservationServiceImpl
-        when(reservationRepository.getBusPrice("BUS123")).thenReturn(busPrice);
-        when(discountService.applyDiscountToReservation(any(Reservation.class), eq(busPrice)))
-                .thenAnswer(invocation -> {
-                    Reservation res = invocation.getArgument(0);
-                    return new Reservation(res.id(), res.dateOfTravel(), res.busNumber(), res.clientId(), busPrice);
-                });
-        when(reservationRepository.save(any(Reservation.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        // Mock discountService to return trips without discount
+        Trip tripWithPrice = new Trip(null, "BUS123", trip.dateOfTravel(), expectedPrice);
+        List<Trip> tripsWithPrice = List.of(tripWithPrice);
 
-        // Check Reservation Fields
+        when(discountService.applyDiscountsToTrips(anyList())).thenReturn(tripsWithPrice);
+
+        // Mock reservationRepository.save
+        Reservation savedReservation = new Reservation(1L, 1L, tripsWithPrice);
+        when(reservationRepository.save(any(Reservation.class))).thenReturn(savedReservation);
+
+        // Mock reservationValidatorService.validate
         doNothing().when(reservationValidatorService).validate(any(Reservation.class));
+
+        // Mock reservationRepository.findByClientId
+        when(reservationRepository.findByClientId(1L)).thenReturn(Collections.emptyList());
 
         // When
         Reservation createdReservation = reservationService.createReservation(reservation);
 
-        // Then: Verify no discount is applied
-        verify(reservationRepository).save(argThat(res -> res.price().compareTo(busPrice) == 0));
+        // Then
+        verify(reservationValidatorService).validate(any(Reservation.class));
+        verify(discountService).applyDiscountsToTrips(anyList());
+        verify(reservationRepository).save(any(Reservation.class));
+
         assertNotNull(createdReservation);
-        assertEquals(busPrice, createdReservation.price());
-    }
-
-    @Test
-    void testCreateReservationWithNullPrice() {
-        // Given
-        Reservation reservation = new Reservation(1L, LocalDateTime.now(), "BUS123", 1L, null);
-        BigDecimal busPrice = new BigDecimal("90.00");
-
-        // implement getBusPrice method in ReservationServiceImpl
-        when(reservationRepository.getBusPrice("BUS123")).thenReturn(busPrice);
-        when(discountService.applyDiscountToReservation(any(Reservation.class), eq(busPrice)))
-                .thenAnswer(invocation -> {
-                    Reservation res = invocation.getArgument(0);
-                    return new Reservation(res.id(), res.dateOfTravel(), res.busNumber(), res.clientId(), busPrice);
-                });
-        when(reservationRepository.save(any(Reservation.class))).thenAnswer(invocation -> invocation.getArgument(0));
-
-        // Check Reservation Fields
-        doNothing().when(reservationValidatorService).validate(any(Reservation.class));
-
-        // When
-        Reservation createdReservation = reservationService.createReservation(reservation);
-
-        // Then: Verify no discount is applied, and bus price is used
-        verify(reservationRepository).save(argThat(res -> res.price().compareTo(busPrice) == 0));
-        assertNotNull(createdReservation);
-        assertEquals(busPrice, createdReservation.price());
+        assertEquals(expectedPrice, createdReservation.trips().getFirst().price());
     }
 
     @Test
     void testCreateReservationWithBusPriceException() {
         // Given
-        Reservation reservation = new Reservation(1L, LocalDateTime.now(), "BUS123", 1L, null);
+        Trip trip = new Trip(null, "BUS123", LocalDateTime.now(), null);
+        List<Trip> trips = List.of(trip);
+        Reservation reservation = new Reservation(null, 1L, trips);
 
-        // Bus price is null or zero, which should raise an exception
-        when(reservationRepository.getBusPrice("BUS123")).thenReturn(BigDecimal.ZERO);
+        // Mock discountService to throw BusPriceException
+        when(discountService.applyDiscountsToTrips(anyList()))
+                .thenThrow(new BusPriceException("Le prix du bus est introuvable ou invalide pour le numéro de bus : BUS123"));
 
-        // Check Reservation Fields
+        // Mock reservationValidatorService.validate
         doNothing().when(reservationValidatorService).validate(any(Reservation.class));
+
+        // Mock reservationRepository.findByClientId
+        when(reservationRepository.findByClientId(1L)).thenReturn(Collections.emptyList());
 
         // When & Then
         assertThrows(BusPriceException.class, () -> {
@@ -171,30 +194,33 @@ class ReservationServiceImplTest {
         });
     }
 
-
     @Test
-    void testPayReservation() {
-        Long reservationId = 1L;
-        String paymentType = "Credit Card";
-        when(paymentService.processPayment(reservationId, paymentType)).thenReturn(true);
+    void testCreateReservationWithExistingReservation() {
+        // Given
+        Trip trip = new Trip(null, "BUS123", LocalDateTime.now(), null);
+        List<Trip> trips = List.of(trip);
+        Reservation reservation = new Reservation(null, 1L, trips);
 
-        Bill billMock = new Bill(reservationId, paymentType);
-        when(billRepository.save(any(Bill.class))).thenReturn(billMock);
+        // Mock existing reservation
+        Reservation existingReservation = new Reservation(2L, 1L, trips);
+        when(reservationRepository.findByClientId(1L)).thenReturn(List.of(existingReservation));
 
-        Bill bill = billingService.payReservation(reservationId, paymentType);
-        verify(paymentService).processPayment(reservationId, paymentType);
-        verify(billRepository).save(any(Bill.class));
+        // Mock reservationValidatorService.validate
+        doNothing().when(reservationValidatorService).validate(any(Reservation.class));
 
-        // Validate bill creation after successful payment
-        assertNotNull(bill);
-        assertEquals(reservationId, bill.reservationId());
-        assertEquals(paymentType, bill.paymentType());
+        // When & Then
+        assertThrows(ReservationAlreadyExistsException.class, () -> {
+            reservationService.createReservation(reservation);
+        });
     }
 
     @Test
     void testFindReservationsByClientId() {
         Long clientId = 1L;
-        Reservation reservation = new Reservation(1L, LocalDateTime.now(), "BUS123", clientId, BigDecimal.ZERO);
+        Trip trip = new Trip(null, "BUS123", LocalDateTime.now(), BigDecimal.ZERO);
+        List<Trip> trips = List.of(trip);
+        Reservation reservation = new Reservation(1L, clientId, trips);
+
         when(reservationRepository.findByClientId(clientId)).thenReturn(List.of(reservation));
 
         List<Reservation> reservations = reservationService.findReservationsByClientId(clientId);
@@ -202,5 +228,33 @@ class ReservationServiceImplTest {
         // Validate reservations are fetched correctly
         assertFalse(reservations.isEmpty());
         assertEquals(clientId, reservations.getFirst().clientId());
+    }
+
+    @Test
+    void testPayReservation() {
+        // Given
+        Long reservationId = 1L;
+        String paymentType = "Credit Card";
+
+        // Assuming paymentService.processPayment returns true
+        when(paymentService.processPayment(reservationId, paymentType)).thenReturn(true);
+
+        // Mock billRepository.save
+        Bill billMock = new Bill(reservationId, paymentType);
+        when(billRepository.save(any(Bill.class))).thenReturn(billMock);
+
+        BillingService billingService = new BillingServiceImpl(paymentService, billRepository);
+
+        // When
+        Bill bill = billingService.payReservation(reservationId, paymentType);
+
+        // Then
+        verify(paymentService).processPayment(reservationId, paymentType);
+        verify(billRepository).save(any(Bill.class));
+
+        // Validate bill creation after successful payment
+        assertNotNull(bill);
+        assertEquals(reservationId, bill.reservationId());
+        assertEquals(paymentType, bill.paymentType());
     }
 }

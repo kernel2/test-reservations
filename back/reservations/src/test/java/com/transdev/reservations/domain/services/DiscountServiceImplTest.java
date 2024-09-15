@@ -1,107 +1,132 @@
 package com.transdev.reservations.domain.services;
 
-import com.transdev.reservations.domain.model.Reservation;
-import com.transdev.reservations.domain.ports.outgoing.DiscountService;
+import com.transdev.reservations.domain.exceptions.BusPriceException;
+import com.transdev.reservations.domain.model.Trip;
+import com.transdev.reservations.domain.ports.outgoing.TripRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-
+import static org.mockito.Mockito.*;
 class DiscountServiceImplTest {
 
-    private DiscountService discountService;
+    @InjectMocks
+    private DiscountServiceImpl discountService;
+
+    @Mock
+    private TripRepository tripRepository;
+
 
     @BeforeEach
     void setUp() {
-        discountService = new DiscountServiceImpl();
+        MockitoAnnotations.openMocks(this);
     }
 
     @Test
     void testApplyDiscountWhenPriceAboveThreshold() {
         // Given
-        Reservation reservation = new Reservation(1L, null, "BUS123", 1L, BigDecimal.ZERO);
         BigDecimal busPrice = new BigDecimal("150.00");
-        BigDecimal expectedDiscountedPrice = busPrice.subtract(busPrice.multiply(new BigDecimal("0.05")));
+        BigDecimal expectedPrice = busPrice.subtract(busPrice.multiply(new BigDecimal("0.05")));
+        expectedPrice = expectedPrice.setScale(2, RoundingMode.HALF_UP);
 
         // When
-        Reservation result = discountService.applyDiscountToReservation(reservation, busPrice);
+        BigDecimal discountedPrice = discountService.applyDiscountToPrice(busPrice);
 
         // Then
-        assertEquals(expectedDiscountedPrice, result.price());
-        assertEquals(reservation.id(), result.id());
-        assertEquals(reservation.dateOfTravel(), result.dateOfTravel());
-        assertEquals(reservation.busNumber(), result.busNumber());
-        assertEquals(reservation.clientId(), result.clientId());
+        assertEquals(expectedPrice, discountedPrice);
+
     }
 
     @Test
-    void testApplyDiscountWhenPriceExactlyAtThreshold() {
+    void testApplyDiscountToPriceAtThreshold() {
         // Given
-        Reservation reservation = new Reservation(1L, null, "BUS123", 1L, BigDecimal.ZERO);
-        BigDecimal busPrice = new BigDecimal("100.00");
+        BigDecimal price = new BigDecimal("100.00");
 
         // When
-        Reservation result = discountService.applyDiscountToReservation(reservation, busPrice);
+        BigDecimal discountedPrice = discountService.applyDiscountToPrice(price);
 
         // Then
-        assertEquals(busPrice, result.price());  // No discount applied because the price is exactly at the threshold
-        assertEquals(reservation.id(), result.id());
-        assertEquals(reservation.dateOfTravel(), result.dateOfTravel());
-        assertEquals(reservation.busNumber(), result.busNumber());
-        assertEquals(reservation.clientId(), result.clientId());
+        assertEquals(price, discountedPrice); // No discount applied at threshold
     }
 
     @Test
-    void testApplyDiscountWhenPriceBelowThreshold() {
+    void testApplyDiscountToPriceBelowThreshold() {
         // Given
-        Reservation reservation = new Reservation(1L, null, "BUS123", 1L, BigDecimal.ZERO);
-        BigDecimal busPrice = new BigDecimal("80.00");
+        BigDecimal price = new BigDecimal("80.00");
 
         // When
-        Reservation result = discountService.applyDiscountToReservation(reservation, busPrice);
+        BigDecimal discountedPrice = discountService.applyDiscountToPrice(price);
 
         // Then
-        assertEquals(busPrice, result.price());  // No discount applied because the price is below the threshold
-        assertEquals(reservation.id(), result.id());
-        assertEquals(reservation.dateOfTravel(), result.dateOfTravel());
-        assertEquals(reservation.busNumber(), result.busNumber());
-        assertEquals(reservation.clientId(), result.clientId());
+        assertEquals(price, discountedPrice); // No discount applied below threshold
     }
 
     @Test
-    void testApplyDiscountWhenReservationPriceIsNull() {
+    void testApplyDiscountsToTrips() {
         // Given
-        Reservation reservation = new Reservation(1L, null, "BUS123", 1L, null);
-        BigDecimal busPrice = new BigDecimal("90.00");
+        Trip trip1 = new Trip(1L, "BUS123", LocalDateTime.now(), null);
+        Trip trip2 = new Trip(2L, "BUS456", LocalDateTime.now(), null);
+
+        // Mock bus prices
+        when(tripRepository.getBusPrice("BUS123")).thenReturn(new BigDecimal("150.00"));
+        when(tripRepository.getBusPrice("BUS456")).thenReturn(new BigDecimal("80.00"));
+
+        // Expected discounted prices
+        BigDecimal expectedPriceTrip1 = new BigDecimal("142.50"); // 5% discount
+        BigDecimal expectedPriceTrip2 = new BigDecimal("80.00");  // No discount
 
         // When
-        Reservation result = discountService.applyDiscountToReservation(reservation, busPrice);
+        List<Trip> discountedTrips = discountService.applyDiscountsToTrips(Arrays.asList(trip1, trip2));
 
         // Then
-        assertEquals(busPrice, result.price());  // No discount applied because reservation price is null
-        assertEquals(reservation.id(), result.id());
-        assertEquals(reservation.dateOfTravel(), result.dateOfTravel());
-        assertEquals(reservation.busNumber(), result.busNumber());
-        assertEquals(reservation.clientId(), result.clientId());
+        assertEquals(2, discountedTrips.size());
+
+        Trip discountedTrip1 = discountedTrips.getFirst();
+        assertEquals(expectedPriceTrip1, discountedTrip1.price());
+        assertEquals(trip1.busNumber(), discountedTrip1.busNumber());
+        assertEquals(trip1.dateOfTravel(), discountedTrip1.dateOfTravel());
+
+        Trip discountedTrip2 = discountedTrips.get(1);
+        assertEquals(expectedPriceTrip2, discountedTrip2.price());
+        assertEquals(trip2.busNumber(), discountedTrip2.busNumber());
+        assertEquals(trip2.dateOfTravel(), discountedTrip2.dateOfTravel());
     }
 
     @Test
-    void testApplyDiscountWhenReservationPriceIsNonZero() {
+    void testApplyDiscountToTripWithInvalidBusPrice() {
         // Given
-        Reservation reservation = new Reservation(1L, null, "BUS123", 1L, new BigDecimal("50.00"));
-        BigDecimal busPrice = new BigDecimal("120.00");
-        BigDecimal expectedDiscountedPrice = busPrice.subtract(busPrice.multiply(new BigDecimal("0.05")));
+        Trip trip = new Trip(1L, "BUS999", LocalDateTime.now(), null);
+
+        // Mock bus price as null
+        when(tripRepository.getBusPrice("BUS999")).thenReturn(null);
+
+        // When & Then
+        BusPriceException exception = assertThrows(BusPriceException.class, () -> {
+            discountService.applyDiscountsToTrips(Arrays.asList(trip));
+        });
+
+        assertTrue(exception.getMessage().contains("Le prix du bus est introuvable ou invalide pour le numéro de bus : BUS999"));
+    }
+    @Test
+    void testApplyDiscountToPriceWithRounding() {
+        // Given
+        BigDecimal price = new BigDecimal("99.50");
+        BigDecimal expectedPrice = price.setScale(2, RoundingMode.HALF_UP);
 
         // When
-        Reservation result = discountService.applyDiscountToReservation(reservation, busPrice);
+        BigDecimal resultPrice = discountService.applyDiscountToPrice(price);
 
         // Then
-        assertEquals(expectedDiscountedPrice, result.price());  // Discount should be applied
-        assertEquals(reservation.id(), result.id());
-        assertEquals(reservation.dateOfTravel(), result.dateOfTravel());
-        assertEquals(reservation.busNumber(), result.busNumber());
-        assertEquals(reservation.clientId(), result.clientId());
+        assertEquals(expectedPrice, resultPrice);
     }
+
 }

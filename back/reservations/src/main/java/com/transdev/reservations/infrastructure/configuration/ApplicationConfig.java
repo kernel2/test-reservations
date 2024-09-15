@@ -8,7 +8,6 @@ import com.transdev.reservations.domain.ports.incoming.ReservationService;
 import com.transdev.reservations.domain.ports.outgoing.*;
 import com.transdev.reservations.domain.services.*;
 import com.transdev.reservations.infrastructure.adapters.payment.PaymentServiceImpl;
-import com.transdev.reservations.infrastructure.adapters.persistence.bus.BusJpaRepository;
 import com.transdev.reservations.infrastructure.adapters.persistence.reservation.ReservationJpaRepository;
 import com.transdev.reservations.infrastructure.adapters.persistence.reservation.ReservationMapper;
 import com.transdev.reservations.infrastructure.adapters.persistence.reservation.ReservationRepositoryAdapter;
@@ -24,8 +23,8 @@ public class ApplicationConfig {
     }
 
     @Bean
-    public ReservationRepository reservationRepository(ReservationJpaRepository reservationJpaRepository, ReservationMapper reservationMapper, BusJpaRepository busJpaRepository) {
-        return new ReservationRepositoryAdapter(reservationJpaRepository, reservationMapper, busJpaRepository);
+    public ReservationRepository reservationRepository(ReservationJpaRepository reservationJpaRepository, ReservationMapper reservationMapper) {
+        return new ReservationRepositoryAdapter(reservationJpaRepository, reservationMapper);
     }
 
     @Bean
@@ -49,8 +48,8 @@ public class ApplicationConfig {
     }
 
     @Bean
-    public DiscountService discountService() {
-        return new DiscountServiceImpl();
+    public DiscountService discountService(TripRepository tripRepository) {
+        return new DiscountServiceImpl(tripRepository);
     }
 
     @Bean
