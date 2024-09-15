@@ -1,11 +1,13 @@
 package com.transdev.reservations.infrastructure.adapters.rest;
 
 import com.transdev.reservations.application.dto.BusDTO;
+import com.transdev.reservations.application.dto.TripDTO;
 import com.transdev.reservations.application.services.BusApplicationService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -31,5 +33,14 @@ public class BusController {
     @GetMapping
     public ResponseEntity<List<BusDTO>> getAllBuses() {
         return ResponseEntity.ok(busApplicationService.getAllBuses());
+    }
+
+    @GetMapping("/{busNumber}/trips")
+    public ResponseEntity<List<TripDTO>> getTripsByBusAndDate(
+            @PathVariable String busNumber,
+            @RequestParam("date") String travelDate) {
+        LocalDateTime date = LocalDateTime.parse(travelDate); // Parse la date à partir du paramètre
+        List<TripDTO> trips = busApplicationService.getTripsByBusAndDate(busNumber, date);
+        return ResponseEntity.ok(trips);
     }
 }

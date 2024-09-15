@@ -3,8 +3,11 @@ package com.transdev.reservations.infrastructure.adapters.persistence.bus;
 import com.transdev.reservations.domain.exceptions.ResourceAlreadyExistsException;
 import com.transdev.reservations.domain.exceptions.ResourceNotFoundException;
 import com.transdev.reservations.domain.model.Bus;
+import com.transdev.reservations.domain.model.Trip;
 import com.transdev.reservations.domain.ports.outgoing.BusRepository;
+import com.transdev.reservations.infrastructure.adapters.persistence.trip.TripEntity;
 import com.transdev.reservations.infrastructure.adapters.persistence.trip.TripJpaRepository;
+import com.transdev.reservations.infrastructure.adapters.persistence.trip.TripMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -21,11 +24,13 @@ public class BusRepositoryAdapter implements BusRepository {
     private final BusJpaRepository busJpaRepository;
     private final BusMapper busMapper;
     private final TripJpaRepository tripJpaRepository;
+    private final TripMapper tripMapper;
 
-    public BusRepositoryAdapter(BusJpaRepository busJpaRepository, BusMapper busMapper, TripJpaRepository tripJpaRepository) {
+    public BusRepositoryAdapter(BusJpaRepository busJpaRepository, BusMapper busMapper, TripJpaRepository tripJpaRepository, TripMapper tripMapper) {
         this.busJpaRepository = busJpaRepository;
         this.busMapper = busMapper;
         this.tripJpaRepository = tripJpaRepository;
+        this.tripMapper = tripMapper;
     }
 
     @Override
@@ -57,5 +62,13 @@ public class BusRepositoryAdapter implements BusRepository {
     @Override
     public boolean existsTripOnDate(String busNumber, LocalDateTime travelDate) {
         return tripJpaRepository.existsByBusNumberAndDateOfTravel(busNumber, travelDate);
+    }
+
+    @Override
+    public List<Trip> findTripsByBusAndDate(String busNumber, LocalDateTime travelDate) {
+        List<TripEntity> tripEntities = tripJpaRepository.findByBusNumberAndDateOfTravel(busNumber, travelDate);
+        return tripEntities.stream()
+                .map(tripMapper::toDomainModel)
+                .toList();
     }
 }

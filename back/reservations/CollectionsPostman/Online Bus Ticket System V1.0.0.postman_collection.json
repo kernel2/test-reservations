@@ -1,675 +1,734 @@
 {
-  "info": {
-    "_postman_id": "2f15fb69-61f9-4bb3-9cee-3706b55ad834",
-    "name": "Online Bus Ticket System V1.0.0",
-    "description": "Postman collection for the Reservation system controllers",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "_exporter_id": "9164201"
-  },
-  "item": [
-    {
-      "name": "BusController",
-      "item": [
-        {
-          "name": "Create Bus",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "// Test de succès",
-                  "pm.test('Status code is 201 - Bus created', function () {",
-                  "    pm.response.to.have.status(201);",
-                  "});",
-                  "pm.test('Bus has busNumber property', function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData).to.have.property('busNumber');",
-                  "});",
-                  "",
-                  "// Test de duplication",
-                  "pm.test('Bus already exists returns 409', function () {",
-                  "    if (pm.response.code === 409) {",
-                  "        pm.expect(pm.response.text()).to.include('Bus with number');",
-                  "    }",
-                  "});",
-                  "",
-                  "// Test d'erreur si un champ manque",
-                  "pm.test('Bad request returns 400', function () {",
-                  "    if (pm.response.code === 400) {",
-                  "        pm.expect(pm.response.text()).to.include('Validation error');",
-                  "    }",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"busNumber\": \"BUS001\",\n    \"seatsPerTrip\": 10,\n    \"departureTime\": \"2024-09-11T08:30:00\",\n    \"pricePerTrip\": 30.00\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{base_url}}/buses",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "buses"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Get Bus By Number",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "// Test succès",
-                  "pm.test('Status code is 200 - Bus found', function () {",
-                  "    pm.response.to.have.status(200);",
-                  "});",
-                  "pm.test('Bus has busNumber property', function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData).to.have.property('busNumber', 'BUS001');",
-                  "});",
-                  "",
-                  "// Test d'erreur 404",
-                  "pm.test('Bus not found returns 404', function () {",
-                  "    if (pm.response.code === 404) {",
-                  "        pm.expect(pm.response.text()).to.include('Bus not found');",
-                  "    }",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/buses/BUS001",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "buses",
-                "BUS001"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Get All Buses",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "// Test succès",
-                  "pm.test('Status code is 200 - List buses', function () {",
-                  "    pm.response.to.have.status(200);",
-                  "});",
-                  "pm.test('Response should be an array of buses', function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData).to.be.an('array');",
-                  "});",
-                  "",
-                  "// Test d'aucun bus disponible",
-                  "pm.test('No buses returns empty array', function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData.length).to.eql(jsonData.length);",
-                  "});"
-                ],
-                "type": "text/javascript",
-                "packages": {}
-              }
-            }
-          ],
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/buses",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "buses"
-              ]
-            }
-          },
-          "response": []
-        }
-      ]
-    },
-    {
-      "name": "ClientController",
-      "item": [
-        {
-          "name": "Create Client",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "// Test de succès",
-                  "pm.test('Status code is 201 - Client created', function () {",
-                  "    pm.response.to.have.status(201);",
-                  "});",
-                  "pm.test('Client has email property', function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData).to.have.property('email');",
-                  "});",
-                  "",
-                  "// Test d'erreur - email déjà utilisé",
-                  "pm.test('Client already exists returns 409', function () {",
-                  "    if (pm.response.code === 409) {",
-                  "        pm.expect(pm.response.text()).to.include('Client already exists');",
-                  "    }",
-                  "});",
-                  "",
-                  "// Test d'erreur si les champs sont manquants",
-                  "pm.test('Missing fields returns 400', function () {",
-                  "    if (pm.response.code === 400) {",
-                  "        pm.expect(pm.response.text()).to.include('Validation error');",
-                  "    }",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"name\": \"John Doe\",\n    \"email\": \"john.doe@example.com\"\n}"
-            },
-            "url": {
-              "raw": "{{base_url}}/clients",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "clients"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Get Client By ID",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "// Test succès",
-                  "pm.test('Status code is 200 - Client found', function () {",
-                  "    pm.response.to.have.status(200);",
-                  "});",
-                  "pm.test('Client has name and email properties', function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData).to.have.property('name');",
-                  "    pm.expect(jsonData).to.have.property('email');",
-                  "});",
-                  "",
-                  "// Test d'erreur - client introuvable",
-                  "pm.test('Client not found returns 404', function () {",
-                  "    if (pm.response.code === 404) {",
-                  "        pm.expect(pm.response.text()).to.include('Client not found');",
-                  "    }",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/clients/1",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "clients",
-                "1"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Get All Clients",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "// Test succès",
-                  "pm.test('Status code is 200 - List clients', function () {",
-                  "    pm.response.to.have.status(200);",
-                  "});",
-                  "pm.test('Response should be an array of clients', function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData).to.be.an('array');",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/clients",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "clients"
-              ]
-            }
-          },
-          "response": []
-        }
-      ]
-    },
-    {
-      "name": "ReservationController",
-      "item": [
-        {
-          "name": "Create Reservation",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "// Test succès",
-                  "pm.test('Status code is 201 - Reservation created', function () {",
-                  "    pm.response.to.have.status(201);",
-                  "});",
-                  "pm.test('Reservation has clientId and trips', function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData).to.have.property('clientId');",
-                  "    pm.expect(jsonData.trips).to.be.an('array');",
-                  "});",
-                  "",
-                  "// Test d'erreur - client introuvable",
-                  "pm.test('Client not found returns 404', function () {",
-                  "    if (pm.response.code === 404) {",
-                  "        pm.expect(pm.response.text()).to.include('Client not found');",
-                  "    }",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"clientId\": 6,\n    \"trips\": [\n        {\n            \"busNumber\": \"BUS123\",\n            \"dateOfTravel\": \"2024-09-11T08:30:00\"\n        },\n        {\n            \"busNumber\": \"BUS002\",\n            \"dateOfTravel\": \"2024-09-11T08:30:00\"\n        }\n    ]\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{base_url}}/reservations",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "reservations"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Get Reservation By ID",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "// Test de succès",
-                  "pm.test('Status code is 200 - Reservation found', function () {",
-                  "    pm.response.to.have.status(200);",
-                  "});",
-                  "pm.test('Reservation has correct properties', function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData).to.have.property('id');",
-                  "    pm.expect(jsonData).to.have.property('clientId');",
-                  "    pm.expect(jsonData.trips).to.be.an('array');",
-                  "});",
-                  "",
-                  "// Test d'erreur - reservation introuvable",
-                  "pm.test('Reservation not found returns 404', function () {",
-                  "    if (pm.response.code === 404) {",
-                  "        pm.expect(pm.response.text()).to.include('Reservation not found');",
-                  "    }",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/reservations/1",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "reservations",
-                "1"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "List Reservations By Client ID",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "// Test de succès",
-                  "pm.test('Status code is 200 - Reservations found', function () {",
-                  "    pm.response.to.have.status(200);",
-                  "});",
-                  "pm.test('Reservations should be an array', function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData).to.be.an('array');",
-                  "});",
-                  "",
-                  "// Test d'erreur - client introuvable",
-                  "pm.test('Client not found returns 404', function () {",
-                  "    if (pm.response.code === 404) {",
-                  "        pm.expect(pm.response.text()).to.include('Client not found');",
-                  "    }",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/reservations/client/1",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "reservations",
-                "client",
-                "1"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Delete Reservation",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "// Test succès",
-                  "pm.test('Status code is 204 - Reservation deleted', function () {",
-                  "    pm.response.to.have.status(204);",
-                  "});",
-                  "",
-                  "// Test d'erreur - reservation introuvable",
-                  "pm.test('Reservation not found returns 404', function () {",
-                  "    if (pm.response.code === 404) {",
-                  "        pm.expect(pm.response.text()).to.include('Reservation not found');",
-                  "    }",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "DELETE",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/reservations/1",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "reservations",
-                "1"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Cancel Reservation Copy",
-          "request": {
-            "method": "DELETE",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/reservations/1",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "reservations",
-                "1"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Pay Reservation Copy",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "// Test succès",
-                  "pm.test('Status code is 200 - Payment successful', function () {",
-                  "    pm.response.to.have.status(200);",
-                  "});",
-                  "",
-                  "// Test d'erreur - réservation introuvable",
-                  "pm.test('Reservation not found returns 404', function () {",
-                  "    if (pm.response.code === 404) {",
-                  "        pm.expect(pm.response.text()).to.include('Reservation not found');",
-                  "    }",
-                  "});",
-                  "",
-                  "// Test d'erreur - paiement déjà effectué",
-                  "pm.test('Payment already processed returns 409', function () {",
-                  "    if (pm.response.code === 409) {",
-                  "        pm.expect(pm.response.text()).to.include('Payment already processed');",
-                  "    }",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{base_url}}/reservations/5/pay/Credit Card",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "reservations",
-                "5",
-                "pay",
-                "Credit Card"
-              ]
-            }
-          },
-          "response": []
-        }
-      ]
-    },
-    {
-      "name": "BillingController",
-      "item": [
-        {
-          "name": "Pay Reservation",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "// Test succès",
-                  "pm.test('Status code is 200 - Payment successful', function () {",
-                  "    pm.response.to.have.status(200);",
-                  "});",
-                  "pm.test('Response contains payment details', function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData).to.have.property('reservationId');",
-                  "    pm.expect(jsonData).to.have.property('paymentType');",
-                  "});",
-                  "",
-                  "// Test d'erreur - reservation introuvable",
-                  "pm.test('Reservation not found returns 404', function () {",
-                  "    if (pm.response.code === 404) {",
-                  "        pm.expect(pm.response.text()).to.include('Reservation not found');",
-                  "    }",
-                  "});",
-                  "",
-                  "// Test d'erreur - paiement échoué",
-                  "pm.test('Payment failed returns 400', function () {",
-                  "    if (pm.response.code === 400) {",
-                  "        pm.expect(pm.response.text()).to.include('Payment failed');",
-                  "    }",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/bills/pay?reservationId=1&paymentType=creditCard",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "bills",
-                "pay"
-              ],
-              "query": [
-                {
-                  "key": "reservationId",
-                  "value": "1"
-                },
-                {
-                  "key": "paymentType",
-                  "value": "creditCard"
-                }
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Get All Bills",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "// Test succès",
-                  "pm.test('Status code is 200 - Bills retrieved', function () {",
-                  "    pm.response.to.have.status(200);",
-                  "});",
-                  "pm.test('Response should be an array of bills', function () {",
-                  "    var jsonData = pm.response.json();",
-                  "    pm.expect(jsonData).to.be.an('array');",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/bills",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "bills"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Get Bills Sorted By Amount",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/bills/sorted",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "bills",
-                "sorted"
-              ]
-            }
-          },
-          "response": []
-        }
-      ]
-    }
-  ]
+	"info": {
+		"_postman_id": "2f15fb69-61f9-4bb3-9cee-3706b55ad834",
+		"name": "Online Bus Ticket System V1.0.0",
+		"description": "Postman collection for the Reservation system controllers",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "9164201"
+	},
+	"item": [
+		{
+			"name": "BusController",
+			"item": [
+				{
+					"name": "Create Bus",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Test de succès",
+									"pm.test('Status code is 201 - Bus created', function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"pm.test('Bus has busNumber property', function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('busNumber');",
+									"});",
+									"",
+									"// Test de duplication",
+									"pm.test('Bus already exists returns 409', function () {",
+									"    if (pm.response.code === 409) {",
+									"        pm.expect(pm.response.text()).to.include('Bus with number');",
+									"    }",
+									"});",
+									"",
+									"// Test d'erreur si un champ manque",
+									"pm.test('Bad request returns 400', function () {",
+									"    if (pm.response.code === 400) {",
+									"        pm.expect(pm.response.text()).to.include('Validation error');",
+									"    }",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"busNumber\": \"BUS001\",\n    \"seatsPerTrip\": 10,\n    \"departureTime\": \"2024-09-11T08:30:00\",\n    \"pricePerTrip\": 30.00\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/buses",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"buses"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Bus By Number",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Test succès",
+									"pm.test('Status code is 200 - Bus found', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test('Bus has busNumber property', function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('busNumber', 'BUS001');",
+									"});",
+									"",
+									"// Test d'erreur 404",
+									"pm.test('Bus not found returns 404', function () {",
+									"    if (pm.response.code === 404) {",
+									"        pm.expect(pm.response.text()).to.include('Bus not found');",
+									"    }",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/buses/BUS001",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"buses",
+								"BUS001"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Buses",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Test succès",
+									"pm.test('Status code is 200 - List buses', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test('Response should be an array of buses', function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.be.an('array');",
+									"});",
+									"",
+									"// Test d'aucun bus disponible",
+									"pm.test('No buses returns empty array', function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData.length).to.eql(jsonData.length);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/buses",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"buses"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Trips By Bus And Date",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Response contains trips\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.be.an('array');",
+									"    pm.expect(jsonData.length).to.be.above(0);",
+									"});",
+									"",
+									"pm.test(\"All trips match the requested bus number\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    jsonData.forEach(function(trip) {",
+									"        pm.expect(trip.busNumber).to.eql(\"BUS123\");",
+									"    });",
+									"});",
+									"",
+									"pm.test(\"All trips have the correct date\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    jsonData.forEach(function(trip) {",
+									"        pm.expect(trip.dateOfTravel).to.include(\"2024-09-21\");",
+									"    });",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/BUS123/trips?date=2024-09-21T08:30:00",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"BUS123",
+								"trips"
+							],
+							"query": [
+								{
+									"key": "date",
+									"value": "2024-09-21T08:30:00"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "ClientController",
+			"item": [
+				{
+					"name": "Create Client",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Test de succès",
+									"pm.test('Status code is 201 - Client created', function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"pm.test('Client has email property', function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('email');",
+									"});",
+									"",
+									"// Test d'erreur - email déjà utilisé",
+									"pm.test('Client already exists returns 409', function () {",
+									"    if (pm.response.code === 409) {",
+									"        pm.expect(pm.response.text()).to.include('Client already exists');",
+									"    }",
+									"});",
+									"",
+									"// Test d'erreur si les champs sont manquants",
+									"pm.test('Missing fields returns 400', function () {",
+									"    if (pm.response.code === 400) {",
+									"        pm.expect(pm.response.text()).to.include('Validation error');",
+									"    }",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"John Doe\",\n    \"email\": \"john.doe@example.com\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/clients",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"clients"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Client By ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Test succès",
+									"pm.test('Status code is 200 - Client found', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test('Client has name and email properties', function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('name');",
+									"    pm.expect(jsonData).to.have.property('email');",
+									"});",
+									"",
+									"// Test d'erreur - client introuvable",
+									"pm.test('Client not found returns 404', function () {",
+									"    if (pm.response.code === 404) {",
+									"        pm.expect(pm.response.text()).to.include('Client not found');",
+									"    }",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/clients/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"clients",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Clients",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Test succès",
+									"pm.test('Status code is 200 - List clients', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test('Response should be an array of clients', function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.be.an('array');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/clients",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"clients"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "ReservationController",
+			"item": [
+				{
+					"name": "Create Reservation",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Test succès",
+									"pm.test('Status code is 201 - Reservation created', function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"pm.test('Reservation has clientId and trips', function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('clientId');",
+									"    pm.expect(jsonData.trips).to.be.an('array');",
+									"});",
+									"",
+									"// Test d'erreur - client introuvable",
+									"pm.test('Client not found returns 404', function () {",
+									"    if (pm.response.code === 404) {",
+									"        pm.expect(pm.response.text()).to.include('Client not found');",
+									"    }",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"clientId\": 6,\n    \"trips\": [\n        {\n            \"busNumber\": \"BUS003\",\n            \"dateOfTravel\": \"2024-09-11T08:30:00\"\n        },\n        {\n            \"busNumber\": \"BUS002\",\n            \"dateOfTravel\": \"2024-10-11T12:30:00\"\n        },\n         {\n            \"busNumber\": \"BUS123\",\n            \"dateOfTravel\": \"2024-10-11T20:15:11\"\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/reservations",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"reservations"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Reservation By ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Test de succès",
+									"pm.test('Status code is 200 - Reservation found', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test('Reservation has correct properties', function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('id');",
+									"    pm.expect(jsonData).to.have.property('clientId');",
+									"    pm.expect(jsonData.trips).to.be.an('array');",
+									"});",
+									"",
+									"// Test d'erreur - reservation introuvable",
+									"pm.test('Reservation not found returns 404', function () {",
+									"    if (pm.response.code === 404) {",
+									"        pm.expect(pm.response.text()).to.include('Reservation not found');",
+									"    }",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/reservations/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"reservations",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List Reservations By Client ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Test de succès",
+									"pm.test('Status code is 200 - Reservations found', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test('Reservations should be an array', function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.be.an('array');",
+									"});",
+									"",
+									"// Test d'erreur - client introuvable",
+									"pm.test('Client not found returns 404', function () {",
+									"    if (pm.response.code === 404) {",
+									"        pm.expect(pm.response.text()).to.include('Client not found');",
+									"    }",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/reservations/client/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"reservations",
+								"client",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Reservation",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Test succès",
+									"pm.test('Status code is 204 - Reservation deleted', function () {",
+									"    pm.response.to.have.status(204);",
+									"});",
+									"",
+									"// Test d'erreur - reservation introuvable",
+									"pm.test('Reservation not found returns 404', function () {",
+									"    if (pm.response.code === 404) {",
+									"        pm.expect(pm.response.text()).to.include('Reservation not found');",
+									"    }",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/reservations/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"reservations",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cancel Reservation Copy",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/reservations/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"reservations",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Pay Reservation Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Test succès",
+									"pm.test('Status code is 200 - Payment successful', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"// Test d'erreur - réservation introuvable",
+									"pm.test('Reservation not found returns 404', function () {",
+									"    if (pm.response.code === 404) {",
+									"        pm.expect(pm.response.text()).to.include('Reservation not found');",
+									"    }",
+									"});",
+									"",
+									"// Test d'erreur - paiement déjà effectué",
+									"pm.test('Payment already processed returns 409', function () {",
+									"    if (pm.response.code === 409) {",
+									"        pm.expect(pm.response.text()).to.include('Payment already processed');",
+									"    }",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/reservations/5/pay/Credit Card",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"reservations",
+								"5",
+								"pay",
+								"Credit Card"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "BillingController",
+			"item": [
+				{
+					"name": "Pay Reservation",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Test succès",
+									"pm.test('Status code is 200 - Payment successful', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test('Response contains payment details', function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.have.property('reservationId');",
+									"    pm.expect(jsonData).to.have.property('paymentType');",
+									"});",
+									"",
+									"// Test d'erreur - reservation introuvable",
+									"pm.test('Reservation not found returns 404', function () {",
+									"    if (pm.response.code === 404) {",
+									"        pm.expect(pm.response.text()).to.include('Reservation not found');",
+									"    }",
+									"});",
+									"",
+									"// Test d'erreur - paiement échoué",
+									"pm.test('Payment failed returns 400', function () {",
+									"    if (pm.response.code === 400) {",
+									"        pm.expect(pm.response.text()).to.include('Payment failed');",
+									"    }",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/bills/pay?reservationId=1&paymentType=creditCard",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"bills",
+								"pay"
+							],
+							"query": [
+								{
+									"key": "reservationId",
+									"value": "1"
+								},
+								{
+									"key": "paymentType",
+									"value": "creditCard"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Bills",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Test succès",
+									"pm.test('Status code is 200 - Bills retrieved', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"pm.test('Response should be an array of bills', function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData).to.be.an('array');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/bills",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"bills"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Bills Sorted By Amount",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/bills/sorted",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"bills",
+								"sorted"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
 }

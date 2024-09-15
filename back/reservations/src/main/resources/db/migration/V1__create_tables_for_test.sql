@@ -13,7 +13,7 @@ ALTER TABLE clients ALTER COLUMN id SET DEFAULT nextval('clients_seq');
 CREATE TABLE IF NOT EXISTS buses (
                                      bus_number VARCHAR(255) PRIMARY KEY,
     seats INT NOT NULL CHECK (seats > 0),  -- Vérification pour les places positives
-    departure_time TIME NOT NULL,
+    departure_time TIMESTAMP NOT NULL,
     price DECIMAL(10, 2) NOT NULL CHECK (price >= 0)  -- Vérification pour un prix non négatif
     );
 
