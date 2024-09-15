@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 @Component
 @Transactional
@@ -32,6 +32,12 @@ public class BillRepositoryAdapter implements BillRepository {
     public List<Bill> findAll() {
         return billJpaRepository.findAll().stream()
                 .map(billMapper::toDomain)
-                .collect(Collectors.toList());
+                .toList();
+    }
+
+    @Override
+    public Optional<Bill> findByReservationId(Long reservationId) {
+        return billJpaRepository.findByReservationId(reservationId)
+                .map(billMapper::toDomain);
     }
 }

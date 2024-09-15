@@ -7,7 +7,6 @@ import com.transdev.reservations.infrastructure.adapters.persistence.bill.BillMa
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class BillingApplicationService {
@@ -28,12 +27,12 @@ public class BillingApplicationService {
     public List<BillDTO> getAllBills() {
         return billingService.getAllBills().stream()
                 .map(billMapper::toDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public List<BillDTO> getBillsSortedByAmount() {
         return billingService.getBillsSortedByAmount().stream()
                 .map(billMapper::toDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
 }

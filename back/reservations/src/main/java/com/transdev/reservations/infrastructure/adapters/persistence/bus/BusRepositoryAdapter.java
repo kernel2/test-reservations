@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 @Transactional
@@ -43,6 +42,6 @@ public class BusRepositoryAdapter implements BusRepository {
         return busJpaRepository.findAll()
                 .stream()
                 .map(busMapper::toDomainModel)
-                .collect(Collectors.toList());
+                .toList();
     }
 }

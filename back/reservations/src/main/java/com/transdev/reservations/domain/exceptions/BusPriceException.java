@@ -1,6 +1,6 @@
 package com.transdev.reservations.domain.exceptions;
 
-public class BusPriceException extends RuntimeException {
+public final class BusPriceException extends ApplicationException{
 
     public BusPriceException(String message) {
         super(message);

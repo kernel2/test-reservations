@@ -1,7 +1,6 @@
 package com.transdev.reservations.domain.exceptions;
 
-public class ReservationAlreadyExistsException extends RuntimeException {
-
+public final class ReservationAlreadyExistsException extends ApplicationException {
     public ReservationAlreadyExistsException(String message) {
         super(message);
     }

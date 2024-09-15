@@ -8,7 +8,6 @@ import com.transdev.reservations.domain.ports.outgoing.TripRepository;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class DiscountServiceImpl implements DiscountService {
 
@@ -36,7 +35,7 @@ public class DiscountServiceImpl implements DiscountService {
     public List<Trip> applyDiscountsToTrips(List<Trip> trips) {
         return trips.stream()
                 .map(this::applyDiscountToTrip)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private Trip applyDiscountToTrip(Trip trip) {

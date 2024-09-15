@@ -7,7 +7,6 @@ import com.transdev.reservations.infrastructure.adapters.persistence.bus.BusMapp
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class BusApplicationService {
@@ -34,6 +33,6 @@ public class BusApplicationService {
     public List<BusDTO> getAllBuses() {
         return busService.getAllBuses().stream()
                 .map(busMapper::toDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
 }
