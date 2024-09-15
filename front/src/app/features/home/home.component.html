@@ -15,7 +15,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let reservation of reservations" [routerLink]="['/reservation', reservation.id]" class="cursor-pointer">
+                <tr *ngFor="let reservation of reservations" [routerLink]="['/reservations', reservation.id]" class="cursor-pointer">
                     <td>{{ reservation.id }}</td>
                     <td>{{ reservation.clientId }}</td>
                     <td>{{ reservation.busNumber }}</td>
