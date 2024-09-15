@@ -1,5 +1,6 @@
 package com.transdev.reservations.domain.services;
 
+import com.transdev.reservations.domain.exceptions.ResourceNotFoundException;
 import com.transdev.reservations.domain.model.Client;
 import com.transdev.reservations.domain.ports.incoming.ClientService;
 import com.transdev.reservations.domain.ports.outgoing.ClientRepository;
@@ -16,13 +17,13 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public Client createClient(Client client) {
-        // Business logic if any
         return clientRepository.save(client);
     }
 
     @Override
     public Client getClientById(Long id) {
-        return clientRepository.findById(id).orElseThrow(() -> new RuntimeException("Client not found"));
+        return clientRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Client ID " + id + " not found"));
     }
 
     @Override

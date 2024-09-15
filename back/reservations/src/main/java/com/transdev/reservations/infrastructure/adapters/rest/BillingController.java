@@ -1,13 +1,10 @@
 package com.transdev.reservations.infrastructure.adapters.rest;
 
-
-import com.transdev.reservations.domain.exceptions.ResourceNotFoundException;
 import com.transdev.reservations.domain.model.Bill;
 import com.transdev.reservations.domain.ports.incoming.BillingService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -23,11 +20,7 @@ public class BillingController {
 
     @PostMapping("/pay")
     public ResponseEntity<Bill> payReservation(@RequestParam Long reservationId, @RequestParam String paymentType) {
-        try {
-            return ResponseEntity.status(HttpStatus.CREATED).body(billingService.payReservation(reservationId, paymentType));
-        } catch (ResourceNotFoundException ex) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
-        }
+        return ResponseEntity.status(HttpStatus.CREATED).body(billingService.payReservation(reservationId, paymentType));
     }
 
     @GetMapping

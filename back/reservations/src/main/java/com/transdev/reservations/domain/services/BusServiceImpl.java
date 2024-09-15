@@ -16,7 +16,6 @@ public class BusServiceImpl implements BusService {
 
     @Override
     public Bus createBus(Bus bus) {
-        // Logique métier (par exemple, vérifier les contraintes sur le nombre de sièges)
         return busRepository.save(bus);
     }
 

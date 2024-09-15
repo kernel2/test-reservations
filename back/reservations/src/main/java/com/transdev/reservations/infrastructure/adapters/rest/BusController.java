@@ -2,11 +2,9 @@ package com.transdev.reservations.infrastructure.adapters.rest;
 
 import com.transdev.reservations.application.dto.BusDTO;
 import com.transdev.reservations.application.services.BusApplicationService;
-import com.transdev.reservations.domain.exceptions.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -22,19 +20,13 @@ public class BusController {
 
     @PostMapping
     public ResponseEntity<BusDTO> createBus(@RequestBody BusDTO busDTO) {
-        try {
-            return ResponseEntity.status(HttpStatus.CREATED).body(busApplicationService.createBus(busDTO));
-        } catch (IllegalArgumentException ex) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ex.getMessage());
-        }    }
+        return ResponseEntity.status(HttpStatus.CREATED).body(busApplicationService.createBus(busDTO));
+    }
 
     @GetMapping("/{busNumber}")
     public ResponseEntity<BusDTO> getBusByNumber(@PathVariable String busNumber) {
-        try {
-            return ResponseEntity.ok(busApplicationService.getBusByNumber(busNumber));
-        } catch (ResourceNotFoundException ex) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
-        }    }
+        return ResponseEntity.ok(busApplicationService.getBusByNumber(busNumber));
+    }
 
     @GetMapping
     public ResponseEntity<List<BusDTO>> getAllBuses() {

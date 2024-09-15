@@ -1,5 +1,7 @@
 package com.transdev.reservations.infrastructure.adapters.persistence.bus;
 
+import com.transdev.reservations.domain.exceptions.ResourceAlreadyExistsException;
+import com.transdev.reservations.domain.exceptions.ResourceNotFoundException;
 import com.transdev.reservations.domain.model.Bus;
 import com.transdev.reservations.domain.ports.outgoing.BusRepository;
 import org.slf4j.Logger;
@@ -25,6 +27,9 @@ public class BusRepositoryAdapter implements BusRepository {
     @Override
     @Transactional
     public Bus save(Bus bus) {
+        if (busJpaRepository.findByBusNumber(bus.busNumber()).isPresent()) {
+            throw new ResourceAlreadyExistsException("Bus with number " + bus.busNumber() + " already exists.");
+        }
         BusEntity busEntity = busMapper.toEntity(bus);
         BusEntity savedEntity = busJpaRepository.save(busEntity);
         return busMapper.toDomainModel(savedEntity);
@@ -33,7 +38,7 @@ public class BusRepositoryAdapter implements BusRepository {
     @Override
     public Bus findByNumber(String busNumber) {
         BusEntity busEntity = busJpaRepository.findByBusNumber(busNumber)
-                .orElseThrow(() -> new RuntimeException("Bus not found for busNumber: " + busNumber));
+                .orElseThrow(() -> new ResourceNotFoundException("Bus not found for busNumber: " + busNumber));
         return busMapper.toDomainModel(busEntity);
     }
 
