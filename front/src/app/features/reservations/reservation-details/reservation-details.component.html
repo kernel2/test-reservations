@@ -1,15 +1,6 @@
 <div class="container mt-4">
     <h2>Détails de la Réservation {{ reservationId }}</h2>
     <form [formGroup]="form" (ngSubmit)="onSubmit()" class="needs-validation" novalidate>
-        <div class="mb-3">
-            <label for="clientId" class="form-label">Client ID</label>
-            <input type="number" id="clientId" class="form-control" formControlName="clientId"
-                [ngClass]="{'is-invalid': form.get('clientId')?.invalid && form.get('clientId')?.touched}" required />
-            <div *ngIf="form.get('clientId')?.invalid && form.get('clientId')?.touched" class="invalid-feedback">
-                Client ID is required.
-            </div>
-        </div>
-
         <div formArrayName="trips">
             <div *ngFor="let trip of trips().controls; let i = index;" [formGroupName]="i"
                 class="mb-4 border p-3 rounded">

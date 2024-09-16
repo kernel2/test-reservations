@@ -7,6 +7,8 @@ import { ReservationService } from 'src/app/services/reservation.service';
 import { Bus } from 'src/app/shared/models/bus.model';
 import { Reservation } from 'src/app/shared/models/reservation.model';
 
+import * as moment from 'moment';
+
 @Component({
     selector: 'app-reservation-details',
     standalone: true,
@@ -31,7 +33,7 @@ export class ReservationDetailsComponent implements OnInit {
         private busService: BusService,
         private service: ReservationService) {
         this.form = this.formbuilder.group({
-            clientId: ['1', [Validators.required]],
+            clientId: [1, [Validators.required]],
             trips: this.formbuilder.array([]),
             totalPrice: [null, [Validators.required]]
         });
@@ -82,10 +84,11 @@ export class ReservationDetailsComponent implements OnInit {
     onSubmit() {
         if (this.form.valid) {
             const body = this.form.value;
-
             body.trips = body.trips.map((trip: any) => {
-                const { _price, ...rest } = trip;
-                return rest;
+                const { _price, id, dateOfTravel, ...rest } = trip;
+                const momentDate = moment(dateOfTravel, 'DD/MM/YYYY HH:mm:ss');
+                const isoString = momentDate.format('YYYY-MM-DDTHH:mm:ss');
+                return { dateOfTravel: isoString, ...rest };
             });
             this.service.create(body).subscribe();
         }
