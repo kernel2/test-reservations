@@ -41,7 +41,7 @@ public class DiscountServiceImpl implements DiscountService {
     private Trip applyDiscountToTrip(Trip trip) {
         BigDecimal busPrice = getBusPrice(trip.busNumber());
         BigDecimal discountedPrice = applyDiscountToPrice(busPrice);
-        return new Trip(trip.id(), trip.busNumber(), trip.dateOfTravel(), trip.seatsPerTrip(), discountedPrice);
+        return new Trip(trip.id(), trip.busNumber(), trip.dateOfTravel(), getBusSeatsPerTrip(trip.busNumber()), discountedPrice);
     }
 
     private BigDecimal getBusPrice(String busNumber) {
@@ -50,6 +50,14 @@ public class DiscountServiceImpl implements DiscountService {
             throw new BusPriceException("Le prix du bus est introuvable ou invalide pour le numéro de bus : " + busNumber);
         }
         return busPrice;
+    }
+
+    private int getBusSeatsPerTrip(String busNumber) {
+        int busSeatsPerTrip = tripRepository.getBusSeatsPerTrip(busNumber);
+        if (busSeatsPerTrip < 0 || busSeatsPerTrip == 0) {
+            throw new BusPriceException("Le Seats Per Trip du bus est introuvable ou invalide pour le numéro de bus : " + busNumber);
+        }
+        return busSeatsPerTrip;
     }
 
     private BigDecimal applyDiscount(BigDecimal price) {
