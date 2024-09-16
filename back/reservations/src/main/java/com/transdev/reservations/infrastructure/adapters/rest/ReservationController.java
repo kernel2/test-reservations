@@ -58,4 +58,11 @@ public class ReservationController {
         BillDTO billDTO = new BillDTO(bill.reservationId(), bill.paymentType());
         return ResponseEntity.ok(billDTO);
     }
+
+    @PutMapping("/{reservationId}")
+    public ResponseEntity<ReservationDTO> updateReservation(@PathVariable Long reservationId, @RequestBody ReservationDTO reservationDTO) {
+        reservationDTO.setId(reservationId);
+        ReservationDTO updatedReservation = reservationApplicationService.updateReservation(reservationId,reservationDTO);
+        return ResponseEntity.ok(updatedReservation);
+    }
 }

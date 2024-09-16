@@ -37,15 +37,16 @@ export class ReservationDetailsComponent implements OnInit {
         private modalService: NgbModal,
         private service: ReservationService) {
         this.form = this.formbuilder.group({
+            clientId: [1],
             trips: this.formbuilder.array([]),
             totalPrice: [null, [Validators.required]]
         });
     }
 
     ngOnInit(): void {
-        this.reservationId = this.route.snapshot.paramMap.get('id') || '';
         this.availableBuses = this.route.snapshot.data['busList'];
         if (this.route.snapshot.data && this.route.snapshot.data['reservation']) {
+            this.reservationId = this.route.snapshot.paramMap.get('id') || '';
             this.reservation = this.route.snapshot.data['reservation'];
             this.form.patchValue({
                 clientId: this.reservation.clientId,
@@ -53,6 +54,8 @@ export class ReservationDetailsComponent implements OnInit {
                 totalPrice: this.reservation.totalPrice,
             });
             (this.reservation.trips || []).forEach(t => (this.form.get('trips') as FormArray).push(this.newTrip(t)));
+        }else {
+            this.reservation.clientId = 1;
         }
     }
 
@@ -91,7 +94,7 @@ export class ReservationDetailsComponent implements OnInit {
                 const { _price, id, dateOfTravel, ...rest } = trip;
                 const momentDate = moment(dateOfTravel, 'DD/MM/YYYY HH:mm:ss');
                 const isoString = momentDate.format('YYYY-MM-DDTHH:mm:ss');
-                return { dateOfTravel: isoString, ...rest };
+                return this.reservation.id ? {id, dateOfTravel: isoString, ...rest } : { dateOfTravel: isoString, ...rest };
             });
             (this.reservation.id ? this.service.update(body) : this.service.create(body)).pipe(
                 switchMap((reservation: IReservation) => {

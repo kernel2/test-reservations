@@ -29,7 +29,7 @@ public class TripRepositoryAdapter implements TripRepository {
     @Transactional
     public Trip save(Trip trip) {
         TripEntity entity = tripMapper.toEntity(trip);
-        TripEntity savedEntity = tripJpaRepository.save(entity);
+        TripEntity savedEntity = tripJpaRepository.saveAndFlush(entity);
         return tripMapper.toDomainModel(savedEntity);
     }
 
@@ -48,13 +48,13 @@ public class TripRepositoryAdapter implements TripRepository {
     public BigDecimal getBusPrice(String busNumber) {
         return busJpaRepository.findByBusNumber(busNumber)
                 .map(BusEntity::getPricePerTrip)
-                .orElse(BigDecimal.ZERO); // Return zero if bus not found
+                .orElse(BigDecimal.ZERO);
     }
 
     @Override
     public int getBusSeatsPerTrip(String busNumber) {
         return busJpaRepository.findByBusNumber(busNumber)
                 .map(BusEntity::getSeatsPerTrip)
-                .orElse(0); // Return zero if bus not found
+                .orElse(0);
     }
 }

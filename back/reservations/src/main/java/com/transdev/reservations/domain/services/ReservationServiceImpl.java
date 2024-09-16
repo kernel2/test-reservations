@@ -31,16 +31,12 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Override
     public Reservation createReservation(Reservation reservation) {
-        //Check Reservation Fields
         reservationValidatorService.validate(reservation);
 
-        // Check for existing reservation
         checkForExistingReservation(reservation);
 
-        // Apply discounts to each trip
         List<Trip> tripsWithDiscount = discountService.applyDiscountsToTrips(reservation.trips());
 
-        // Create a new reservation with discounted trips
         Reservation reservationWithDiscount = new Reservation(
                 reservation.id(),
                 reservation.clientId(),
@@ -51,7 +47,6 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     private void checkForExistingReservation(Reservation reservation) {
-        // Check if any of the trips already exist for the client
         for (Trip trip : reservation.trips()) {
             Optional<Reservation> existingReservation = findExistingReservation(
                     reservation.clientId(),
@@ -103,5 +98,40 @@ public class ReservationServiceImpl implements ReservationService {
     @Override
     public List<Reservation> findReservationsByClientId(Long clientId) {
         return reservationRepository.findByClientId(clientId);
+    }
+
+    @Override
+    public Reservation updateReservation(Long reservationId, Reservation reservation) {
+        Reservation existingReservation = reservationRepository.findById(reservationId)
+                .orElseThrow(() -> new ResourceNotFoundException("La réservation avec l'ID " + reservationId + " n'a pas été trouvée."));
+
+        List<Trip> updatedTrips = existingReservation.trips().stream()
+                .map(existingTrip -> {
+                    Optional<Trip> newTripOpt = reservation.trips().stream()
+                            .filter(newTrip -> newTrip.id() != null && newTrip.id().equals(existingTrip.id()))  // Vérification de l'ID non nul avant comparaison
+                            .findFirst();
+
+                    if (newTripOpt.isPresent()) {
+                        Trip newTrip = newTripOpt.get();
+                        return new Trip(
+                                existingTrip.id(),
+                                newTrip.busNumber(),
+                                newTrip.dateOfTravel(),
+                                newTrip.seatsPerTrip(),
+                                newTrip.price()
+                        );
+                    } else {
+                        return existingTrip;
+                    }
+                })
+                .toList();
+
+        Reservation updatedReservation = new Reservation(
+                existingReservation.id(),
+                existingReservation.clientId(),
+                updatedTrips
+        );
+
+        return reservationRepository.save(updatedReservation);
     }
 }

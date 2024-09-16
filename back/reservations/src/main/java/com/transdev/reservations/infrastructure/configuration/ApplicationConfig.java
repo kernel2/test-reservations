@@ -11,6 +11,7 @@ import com.transdev.reservations.infrastructure.adapters.payment.PaymentServiceI
 import com.transdev.reservations.infrastructure.adapters.persistence.reservation.ReservationJpaRepository;
 import com.transdev.reservations.infrastructure.adapters.persistence.reservation.ReservationMapper;
 import com.transdev.reservations.infrastructure.adapters.persistence.reservation.ReservationRepositoryAdapter;
+import com.transdev.reservations.infrastructure.adapters.persistence.trip.TripJpaRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -19,12 +20,12 @@ public class ApplicationConfig {
 
     @Bean
     public ReservationService reservationService(ReservationRepository reservationRepository, TripRepository tripRepository, ReservationValidatorService reservationValidatorService, DiscountService discountService) {
-        return new ReservationServiceImpl(reservationRepository, tripRepository,reservationValidatorService, discountService);
+        return new ReservationServiceImpl(reservationRepository, tripRepository, reservationValidatorService, discountService);
     }
 
     @Bean
-    public ReservationRepository reservationRepository(ReservationJpaRepository reservationJpaRepository, ReservationMapper reservationMapper) {
-        return new ReservationRepositoryAdapter(reservationJpaRepository, reservationMapper);
+    public ReservationRepository reservationRepository(ReservationJpaRepository reservationJpaRepository, TripJpaRepository tripJpaRepository, ReservationMapper reservationMapper) {
+        return new ReservationRepositoryAdapter(reservationJpaRepository, tripJpaRepository, reservationMapper);
     }
 
     @Bean

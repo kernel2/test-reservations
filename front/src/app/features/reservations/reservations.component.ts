@@ -25,11 +25,10 @@ export class ReservationsComponent implements OnInit {
     }
 
     protected confirmDelete(): void {
-        // please display a NgbModal to confirm which item you try to remove
     }
 
     ngOnInit(): void {
-        this.reservationService.getReservationsByClientID(6).subscribe({
+        this.reservationService.getReservationsByClientID(1).subscribe({
             next: (list: Reservation[]) => {
                 this.reservationList = list;
                 this.changeDetectorRef.detectChanges();

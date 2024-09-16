@@ -40,7 +40,8 @@
 									"    }",
 									"});"
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {}
 							}
 						}
 					],
@@ -49,7 +50,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"busNumber\": \"BUS001\",\n    \"seatsPerTrip\": 10,\n    \"departureTime\": \"2024-09-11T08:30:00\",\n    \"pricePerTrip\": 30.00\n}",
+							"raw": "{\n    \"busNumber\": \"BUS003\",\n    \"seatsPerTrip\": 10,\n    \"departureTime\": \"2024-09-11T08:30:00\",\n    \"pricePerTrip\": 30.00\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -91,7 +92,8 @@
 									"    }",
 									"});"
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {}
 							}
 						}
 					],
@@ -99,13 +101,13 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/buses/BUS001",
+							"raw": "{{base_url}}/buses/BUS123",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"buses",
-								"BUS001"
+								"BUS123"
 							]
 						}
 					},
@@ -193,18 +195,19 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/BUS123/trips?date=2024-09-21T08:30:00",
+							"raw": "{{base_url}}/buses/BUS123/trips?date=2024-09-21",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
+								"buses",
 								"BUS123",
 								"trips"
 							],
 							"query": [
 								{
 									"key": "date",
-									"value": "2024-09-21T08:30:00"
+									"value": "2024-09-21"
 								}
 							]
 						}
@@ -246,7 +249,8 @@
 									"    }",
 									"});"
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {}
 							}
 						}
 					],
@@ -255,7 +259,12 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"John Doe\",\n    \"email\": \"john.doe@example.com\"\n}"
+							"raw": "{\n    \"name\": \"Zakaria FAHRAOUI\",\n    \"email\": \"zakaria.fahraoui@example.com\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
 						},
 						"url": {
 							"raw": "{{base_url}}/clients",
@@ -293,7 +302,8 @@
 									"    }",
 									"});"
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {}
 							}
 						}
 					],
@@ -301,13 +311,13 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{base_url}}/clients/1",
+							"raw": "{{base_url}}/clients/6",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"clients",
-								"1"
+								"6"
 							]
 						}
 					},
@@ -387,7 +397,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"clientId\": 6,\n    \"trips\": [\n        {\n            \"busNumber\": \"BUS003\",\n            \"dateOfTravel\": \"2024-09-11T08:30:00\"\n        },\n        {\n            \"busNumber\": \"BUS002\",\n            \"dateOfTravel\": \"2024-10-11T12:30:00\"\n        },\n         {\n            \"busNumber\": \"BUS123\",\n            \"dateOfTravel\": \"2024-10-11T20:15:11\"\n        }\n    ]\n}",
+							"raw": "{\n    \"clientId\": 6,\n    \"trips\": [\n        {\n            \"busNumber\": \"BUS123\",\n            \"dateOfTravel\": \"2024-09-11T08:30:00\"\n        },\n        {\n            \"busNumber\": \"BUS101\",\n            \"dateOfTravel\": \"2024-09-15T16:00:00\"\n        },\n         {\n            \"busNumber\": \"BUS123\",\n            \"dateOfTravel\": \"2024-10-11T20:15:11\"\n        }\n    ]\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -431,7 +441,8 @@
 									"    }",
 									"});"
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {}
 							}
 						}
 					],
@@ -474,7 +485,8 @@
 									"    }",
 									"});"
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {}
 							}
 						}
 					],
@@ -535,7 +547,7 @@
 					"response": []
 				},
 				{
-					"name": "Cancel Reservation Copy",
+					"name": "Cancel Reservation",
 					"request": {
 						"method": "DELETE",
 						"header": [],
@@ -553,7 +565,7 @@
 					"response": []
 				},
 				{
-					"name": "Pay Reservation Copy",
+					"name": "Pay Reservation",
 					"event": [
 						{
 							"listen": "test",
@@ -615,67 +627,6 @@
 			"name": "BillingController",
 			"item": [
 				{
-					"name": "Pay Reservation",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"// Test succès",
-									"pm.test('Status code is 200 - Payment successful', function () {",
-									"    pm.response.to.have.status(200);",
-									"});",
-									"pm.test('Response contains payment details', function () {",
-									"    var jsonData = pm.response.json();",
-									"    pm.expect(jsonData).to.have.property('reservationId');",
-									"    pm.expect(jsonData).to.have.property('paymentType');",
-									"});",
-									"",
-									"// Test d'erreur - reservation introuvable",
-									"pm.test('Reservation not found returns 404', function () {",
-									"    if (pm.response.code === 404) {",
-									"        pm.expect(pm.response.text()).to.include('Reservation not found');",
-									"    }",
-									"});",
-									"",
-									"// Test d'erreur - paiement échoué",
-									"pm.test('Payment failed returns 400', function () {",
-									"    if (pm.response.code === 400) {",
-									"        pm.expect(pm.response.text()).to.include('Payment failed');",
-									"    }",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [],
-						"url": {
-							"raw": "{{base_url}}/bills/pay?reservationId=1&paymentType=creditCard",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"bills",
-								"pay"
-							],
-							"query": [
-								{
-									"key": "reservationId",
-									"value": "1"
-								},
-								{
-									"key": "paymentType",
-									"value": "creditCard"
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "Get All Bills",
 					"event": [
 						{
@@ -723,6 +674,63 @@
 							"path": [
 								"bills",
 								"sorted"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Pay Reservation",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Test succès",
+									"pm.test('Status code is 200 - Payment successful', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"// Test d'erreur - réservation introuvable",
+									"pm.test('Reservation not found returns 404', function () {",
+									"    if (pm.response.code === 404) {",
+									"        pm.expect(pm.response.text()).to.include('Reservation not found');",
+									"    }",
+									"});",
+									"",
+									"// Test d'erreur - paiement déjà effectué",
+									"pm.test('Payment already processed returns 409', function () {",
+									"    if (pm.response.code === 409) {",
+									"        pm.expect(pm.response.text()).to.include('Payment already processed');",
+									"    }",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/reservations/5/pay/Credit Card",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"reservations",
+								"5",
+								"pay",
+								"Credit Card"
 							]
 						}
 					},
