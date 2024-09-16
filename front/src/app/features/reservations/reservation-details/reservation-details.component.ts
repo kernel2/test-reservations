@@ -1,11 +1,11 @@
-import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { BusService } from 'src/app/services/bus.service';
-import { ReservationService } from 'src/app/services/reservation.service';
-import { Bus } from 'src/app/shared/models/bus.model';
-import { Reservation } from 'src/app/shared/models/reservation.model';
+import {CommonModule} from '@angular/common';
+import {Component, OnInit} from '@angular/core';
+import {FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
+import {ActivatedRoute, Router} from '@angular/router';
+import {BusService} from 'src/app/services/bus.service';
+import {ReservationService} from 'src/app/services/reservation.service';
+import {Bus} from 'src/app/shared/models/bus.model';
+import {Reservation} from 'src/app/shared/models/reservation.model';
 
 import * as moment from 'moment';
 
@@ -27,6 +27,7 @@ export class ReservationDetailsComponent implements OnInit {
     form!: FormGroup;
 
     availableBuses: Bus[] = [];
+
     constructor(
         private route: ActivatedRoute,
         private formbuilder: FormBuilder,
@@ -63,6 +64,7 @@ export class ReservationDetailsComponent implements OnInit {
             id: [null],
             busNumber: ['', [Validators.required]],
             dateOfTravel: ['', [Validators.required]],
+            seatsPerTrip: ['', [Validators.required]],
             price: [null, [Validators.required, Validators.min(0)]]
         });
     }
@@ -79,17 +81,17 @@ export class ReservationDetailsComponent implements OnInit {
     updateTotalPrice(): void {
         const tripsArray = this.trips().value;
         const totalPrice = tripsArray.reduce((acc: number, trip: any) => acc + (trip.price || 0), 0);
-        this.form.patchValue({ totalPrice: totalPrice });
+        this.form.patchValue({totalPrice: totalPrice});
     }
 
     onSubmit() {
         if (this.form.valid) {
             const body = this.form.value;
             body.trips = body.trips.map((trip: any) => {
-                const { _price, id, dateOfTravel, ...rest } = trip;
+                const {_price, id, dateOfTravel, seatsPerTrip, ...rest} = trip;
                 const momentDate = moment(dateOfTravel, 'DD/MM/YYYY HH:mm:ss');
                 const isoString = momentDate.format('YYYY-MM-DDTHH:mm:ss');
-                return { dateOfTravel: isoString, ...rest };
+                return {dateOfTravel: isoString, ...rest};
             });
             this.service.create(body).subscribe(() => {
                 this.router.navigate(['reservations']);
@@ -117,6 +119,7 @@ export class ReservationDetailsComponent implements OnInit {
             });
 
             this.trips().at(index).get('dateOfTravel')?.enable();
+            this.trips().at(index).get('seatsPerTrip')?.enable();
             this.trips().at(index).get('price')?.enable();
 
             this.updateTotalPrice();

@@ -25,7 +25,7 @@
                 <td>{{ (reservation && reservation.trips.length ? reservation.trips[0].dateOfTravel : '') |
                     date:'mm/dd/yyyy à hh:mm:ss' }} </td>
                 <td>{{ reservation && reservation.trips.length ? reservation.trips[0].busNumber : '' }}</td>
-                <td>{{ reservation?.clientId }}</td>
+                <td>{{ reservation && reservation.trips.length ? reservation.trips[0].seatsPerTrip : ''  }}</td>
                 <td>{{ reservation?.totalPrice | currency:'EUR' }} </td>
             </tr>
         </tbody>

@@ -74,7 +74,7 @@ Cette collection contient des requêtes API que vous pouvez utiliser pour tester
 3. Démarrez l'application Angular en mode développement avec la commande suivante :
     
       ```bash
-       npm run dev
+       npm run start:dev
 
 4. Accédez à l'application Angular dans votre navigateur à l'URL suivante :
       ```URL 
