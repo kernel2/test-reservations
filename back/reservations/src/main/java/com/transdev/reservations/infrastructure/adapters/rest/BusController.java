@@ -42,7 +42,6 @@ public class BusController {
     public ResponseEntity<List<TripDTO>> getTripsByBusAndDate(
             @PathVariable String busNumber,
             @RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate travelDate) {
-        // Convertir LocalDate en LocalDateTime à minuit pour simplifier la gestion de la date
         LocalDateTime dateStart = travelDate.atStartOfDay();
         LocalDateTime dateEnd = travelDate.atTime(23, 59, 59); // End of the day
         List<TripDTO> trips = busApplicationService.getTripsByBusAndDate(busNumber, dateStart, dateEnd);
