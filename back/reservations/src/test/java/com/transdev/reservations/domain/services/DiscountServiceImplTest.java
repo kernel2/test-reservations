@@ -73,8 +73,8 @@ class DiscountServiceImplTest {
     @Test
     void testApplyDiscountsToTrips() {
         // Given
-        Trip trip1 = new Trip(1L, "BUS123", LocalDateTime.now(), null);
-        Trip trip2 = new Trip(2L, "BUS456", LocalDateTime.now(), null);
+        Trip trip1 = new Trip(1L, "BUS123", LocalDateTime.now(), 40,null);
+        Trip trip2 = new Trip(2L, "BUS456", LocalDateTime.now(), 40,null);
 
         // Mock bus prices
         when(tripRepository.getBusPrice("BUS123")).thenReturn(new BigDecimal("150.00"));
@@ -104,7 +104,7 @@ class DiscountServiceImplTest {
     @Test
     void testApplyDiscountToTripWithInvalidBusPrice() {
         // Given
-        Trip trip = new Trip(1L, "BUS999", LocalDateTime.now(), null);
+        Trip trip = new Trip(1L, "BUS999", LocalDateTime.now(), 40,null);
 
         // Mock bus price as null
         when(tripRepository.getBusPrice("BUS999")).thenReturn(null);

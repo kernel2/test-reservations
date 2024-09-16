@@ -41,7 +41,7 @@ public class DiscountServiceImpl implements DiscountService {
     private Trip applyDiscountToTrip(Trip trip) {
         BigDecimal busPrice = getBusPrice(trip.busNumber());
         BigDecimal discountedPrice = applyDiscountToPrice(busPrice);
-        return new Trip(trip.id(), trip.busNumber(), trip.dateOfTravel(), discountedPrice);
+        return new Trip(trip.id(), trip.busNumber(), trip.dateOfTravel(), trip.seatsPerTrip(), discountedPrice);
     }
 
     private BigDecimal getBusPrice(String busNumber) {

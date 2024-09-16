@@ -53,7 +53,7 @@ class ReservationServiceImplTest {
     @Test
     void testCreateReservationWithDiscount() {
         // Given
-        Trip trip = new Trip(null, "BUS123", LocalDateTime.now(), null);
+        Trip trip = new Trip(null, "BUS123", LocalDateTime.now(), 40,null);
         List<Trip> trips = List.of(trip);
         Reservation reservation = new Reservation(null, 1L, trips);
 
@@ -62,7 +62,7 @@ class ReservationServiceImplTest {
         discountedPrice = discountedPrice.setScale(2, RoundingMode.HALF_UP);
 
         // Mock discountService to return trips with discounted prices
-        Trip discountedTrip = new Trip(null, "BUS123", trip.dateOfTravel(), discountedPrice);
+        Trip discountedTrip = new Trip(null, "BUS123", trip.dateOfTravel(), 40, discountedPrice);
         List<Trip> discountedTrips = List.of(discountedTrip);
 
         when(discountService.applyDiscountsToTrips(anyList())).thenReturn(discountedTrips);
@@ -98,7 +98,7 @@ class ReservationServiceImplTest {
     @Test
     void testCreateReservationWithoutDiscountAt100() {
         // Given
-        Trip trip = new Trip(null, "BUS123", LocalDateTime.now(), null);
+        Trip trip = new Trip(null, "BUS123", LocalDateTime.now(),40, null);
         List<Trip> trips = List.of(trip);
         Reservation reservation = new Reservation(null, 1L, trips);
 
@@ -106,7 +106,7 @@ class ReservationServiceImplTest {
         BigDecimal expectedPrice = busPrice.setScale(2, RoundingMode.HALF_UP);
 
         // Mock discountService to return trips without discount
-        Trip tripWithPrice = new Trip(null, "BUS123", trip.dateOfTravel(), expectedPrice);
+        Trip tripWithPrice = new Trip(null, "BUS123", trip.dateOfTravel(),40, expectedPrice);
         List<Trip> tripsWithPrice = List.of(tripWithPrice);
 
         when(discountService.applyDiscountsToTrips(anyList())).thenReturn(tripsWithPrice);
@@ -136,7 +136,7 @@ class ReservationServiceImplTest {
     @Test
     void testCreateReservationWithoutDiscountBelow100() {
         // Given
-        Trip trip = new Trip(null, "BUS123", LocalDateTime.now(), null);
+        Trip trip = new Trip(null, "BUS123", LocalDateTime.now(), 40, null);
         List<Trip> trips = List.of(trip);
         Reservation reservation = new Reservation(null, 1L, trips);
 
@@ -144,7 +144,7 @@ class ReservationServiceImplTest {
         BigDecimal expectedPrice = busPrice.setScale(2, RoundingMode.HALF_UP);
 
         // Mock discountService to return trips without discount
-        Trip tripWithPrice = new Trip(null, "BUS123", trip.dateOfTravel(), expectedPrice);
+        Trip tripWithPrice = new Trip(null, "BUS123", trip.dateOfTravel(), 40, expectedPrice);
         List<Trip> tripsWithPrice = List.of(tripWithPrice);
 
         when(discountService.applyDiscountsToTrips(anyList())).thenReturn(tripsWithPrice);
@@ -174,7 +174,7 @@ class ReservationServiceImplTest {
     @Test
     void testCreateReservationWithBusPriceException() {
         // Given
-        Trip trip = new Trip(null, "BUS123", LocalDateTime.now(), null);
+        Trip trip = new Trip(null, "BUS123", LocalDateTime.now(), 40,null);
         List<Trip> trips = List.of(trip);
         Reservation reservation = new Reservation(null, 1L, trips);
 
@@ -197,7 +197,7 @@ class ReservationServiceImplTest {
     @Test
     void testCreateReservationWithExistingReservation() {
         // Given
-        Trip trip = new Trip(null, "BUS123", LocalDateTime.now(), null);
+        Trip trip = new Trip(null, "BUS123", LocalDateTime.now(), 40,null);
         List<Trip> trips = List.of(trip);
         Reservation reservation = new Reservation(null, 1L, trips);
 
@@ -217,7 +217,7 @@ class ReservationServiceImplTest {
     @Test
     void testFindReservationsByClientId() {
         Long clientId = 1L;
-        Trip trip = new Trip(null, "BUS123", LocalDateTime.now(), BigDecimal.ZERO);
+        Trip trip = new Trip(null, "BUS123", LocalDateTime.now(),40, BigDecimal.ZERO);
         List<Trip> trips = List.of(trip);
         Reservation reservation = new Reservation(1L, clientId, trips);
 

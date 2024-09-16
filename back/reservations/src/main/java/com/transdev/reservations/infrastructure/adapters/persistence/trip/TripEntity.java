@@ -19,6 +19,8 @@ public class TripEntity {
 
     private LocalDateTime dateOfTravel;
 
+    private int seatsPerTrip;
+
     private BigDecimal price;
 
     @ManyToOne
@@ -47,6 +49,14 @@ public class TripEntity {
 
     public void setDateOfTravel(LocalDateTime dateOfTravel) {
         this.dateOfTravel = dateOfTravel;
+    }
+
+    public int getSeatsPerTrip() {
+        return seatsPerTrip;
+    }
+
+    public void setSeatsPerTrip(int seatsPerTrip) {
+        this.seatsPerTrip = seatsPerTrip;
     }
 
     public BigDecimal getPrice() {

@@ -38,7 +38,7 @@ class BusServiceImplTest {
         LocalDateTime dateEnd = travelDate.toLocalDate().atTime(23, 59, 59);
 
         List<Trip> existingTrips = List.of(
-                new Trip(1L, "BUS001", travelDate, BigDecimal.valueOf(50.00))
+                new Trip(1L, "BUS001", travelDate, 40,BigDecimal.valueOf(50.00))
         );
 
         when(busRepository.findTripsByBusAndDate(busNumber, dateStart, dateEnd)).thenReturn(existingTrips);

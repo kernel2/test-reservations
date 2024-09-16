@@ -25,7 +25,7 @@ class ReservationValidatorServiceImplTest {
     @Test
     void testValidateWithValidReservation() {
         // Given
-        Trip trip = new Trip(1L, "BUS123", LocalDateTime.now(), BigDecimal.TEN);
+        Trip trip = new Trip(1L, "BUS123", LocalDateTime.now(), 40, BigDecimal.TEN);
         Reservation reservation = new Reservation(1L, 1L, List.of(trip));
 
         // When & Then
@@ -35,7 +35,7 @@ class ReservationValidatorServiceImplTest {
     @Test
     void testValidateWithNullDate() {
         // Given
-        Trip trip = new Trip(1L, "BUS123", null, BigDecimal.TEN);
+        Trip trip = new Trip(1L, "BUS123", null, 40,BigDecimal.TEN);
         Reservation reservation = new Reservation(1L, 1L, List.of(trip));
 
         // When & Then
@@ -47,7 +47,7 @@ class ReservationValidatorServiceImplTest {
     @Test
     void testValidateWithNullBusNumber() {
         // Given
-        Trip trip = new Trip(1L, null, LocalDateTime.now(), BigDecimal.TEN);
+        Trip trip = new Trip(1L, null, LocalDateTime.now(), 40,BigDecimal.TEN);
         Reservation reservation = new Reservation(1L, 1L, List.of(trip));
 
         // When & Then
@@ -59,7 +59,7 @@ class ReservationValidatorServiceImplTest {
     @Test
     void testValidateWithEmptyBusNumber() {
         // Given
-        Trip trip = new Trip(1L, "", LocalDateTime.now(), BigDecimal.TEN);
+        Trip trip = new Trip(1L, "", LocalDateTime.now(), 40,BigDecimal.TEN);
         Reservation reservation = new Reservation(1L, 1L, List.of(trip));
 
         // When & Then
@@ -71,7 +71,7 @@ class ReservationValidatorServiceImplTest {
     @Test
     void testValidateWithNullClientId() {
         // Given
-        Trip trip = new Trip(1L, "BUS123", LocalDateTime.now(), BigDecimal.TEN);
+        Trip trip = new Trip(1L, "BUS123", LocalDateTime.now(), 40,BigDecimal.TEN);
         Reservation reservation = new Reservation(1L, null, List.of(trip));
 
         // When & Then

@@ -7,12 +7,13 @@ public class TripDTO {
     private Long id;
     private String busNumber;
     private LocalDateTime dateOfTravel;
+    private int seatsPerTrip;
     private BigDecimal price;
 
     public TripDTO() {
     }
 
-    public TripDTO(Long id, String busNumber, LocalDateTime dateOfTravel, BigDecimal price) {
+    public TripDTO(Long id, String busNumber, LocalDateTime dateOfTravel,int seatsPerTrip,BigDecimal price) {
         this.id = id;
         this.busNumber = busNumber;
         this.dateOfTravel = dateOfTravel;
@@ -43,6 +44,14 @@ public class TripDTO {
         this.dateOfTravel = dateOfTravel;
     }
 
+    public int getSeatsPerTrip() {
+        return seatsPerTrip;
+    }
+
+    public void setSeatsPerTrip(int seatsPerTrip) {
+        this.seatsPerTrip = seatsPerTrip;
+    }
+
     public BigDecimal getPrice() {
         return price;
     }
@@ -57,6 +66,7 @@ public class TripDTO {
                 "id=" + id +
                 ", busNumber='" + busNumber + '\'' +
                 ", dateOfTravel=" + dateOfTravel +
+                ", seatsPerTrip=" + seatsPerTrip +
                 ", price=" + price +
                 '}';
     }

@@ -18,8 +18,8 @@ import org.springframework.context.annotation.Configuration;
 public class ApplicationConfig {
 
     @Bean
-    public ReservationService reservationService(ReservationRepository reservationRepository, ReservationValidatorService reservationValidatorService, DiscountService discountService) {
-        return new ReservationServiceImpl(reservationRepository, reservationValidatorService, discountService);
+    public ReservationService reservationService(ReservationRepository reservationRepository, TripRepository tripRepository, ReservationValidatorService reservationValidatorService, DiscountService discountService) {
+        return new ReservationServiceImpl(reservationRepository, tripRepository,reservationValidatorService, discountService);
     }
 
     @Bean

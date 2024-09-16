@@ -14,4 +14,5 @@ public interface TripRepository {
 
     BigDecimal getBusPrice(String busNumber);
 
+    int getBusSeatsPerTrip(String busNumber);
 }

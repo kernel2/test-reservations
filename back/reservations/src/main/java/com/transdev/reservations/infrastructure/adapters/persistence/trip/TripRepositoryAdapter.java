@@ -50,4 +50,11 @@ public class TripRepositoryAdapter implements TripRepository {
                 .map(BusEntity::getPricePerTrip)
                 .orElse(BigDecimal.ZERO); // Return zero if bus not found
     }
+
+    @Override
+    public int getBusSeatsPerTrip(String busNumber) {
+        return busJpaRepository.findByBusNumber(busNumber)
+                .map(BusEntity::getSeatsPerTrip)
+                .orElse(0); // Return zero if bus not found
+    }
 }

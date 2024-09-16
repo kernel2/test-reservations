@@ -33,6 +33,7 @@ CREATE TABLE IF NOT EXISTS trips (
                                      id BIGINT PRIMARY KEY,
                                      bus_number VARCHAR(255) NOT NULL,
     date_of_travel TIMESTAMP NOT NULL,
+    seats_per_trip INT NOT NULL CHECK (seats_per_trip > 0),
     price DECIMAL(10, 2) NOT NULL,
     reservation_id BIGINT NOT NULL,
     FOREIGN KEY (bus_number) REFERENCES buses(bus_number) ON DELETE CASCADE,
