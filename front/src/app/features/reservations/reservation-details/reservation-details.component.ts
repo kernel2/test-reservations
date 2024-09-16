@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { BusService } from 'src/app/services/bus.service';
 import { ReservationService } from 'src/app/services/reservation.service';
 import { Bus } from 'src/app/shared/models/bus.model';
@@ -31,6 +31,7 @@ export class ReservationDetailsComponent implements OnInit {
         private route: ActivatedRoute,
         private formbuilder: FormBuilder,
         private busService: BusService,
+        private router: Router,
         private service: ReservationService) {
         this.form = this.formbuilder.group({
             clientId: [1, [Validators.required]],
@@ -90,7 +91,9 @@ export class ReservationDetailsComponent implements OnInit {
                 const isoString = momentDate.format('YYYY-MM-DDTHH:mm:ss');
                 return { dateOfTravel: isoString, ...rest };
             });
-            this.service.create(body).subscribe();
+            this.service.create(body).subscribe(() => {
+                this.router.navigate(['reservations']);
+            });
         }
     }
 
