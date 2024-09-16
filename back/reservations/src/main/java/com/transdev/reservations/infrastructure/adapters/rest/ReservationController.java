@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping("/api/reservations")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class ReservationController {

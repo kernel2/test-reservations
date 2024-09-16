@@ -1,22 +1,25 @@
 import { Client } from "./client.model";
-import { Trajet } from "./trajet.model";
+import { ITrajet } from "./trajet.model";
 
 export interface IReservation {
     id: number;
-    client : Client;
-    trajets: Trajet[];
+    clientId: number;
+    trips: ITrajet[];
+    totalPrice: number;
 }
 
 export class Reservation {
-    id: number | undefined;
-    client : Client | undefined;
-    trajets: Trajet[] | undefined;
+    id!: number;
+    clientId!: number;
+    trips!: ITrajet[];
+    totalPrice!: number;
 
     constructor(apiModel?: IReservation) {
         if (apiModel) {
             this.id = apiModel.id;
-            this.client = apiModel.client;
-            this.trajets = apiModel.trajets;
+            this.clientId = apiModel.clientId;
+            this.trips = apiModel.trips;
+            this.totalPrice = apiModel.totalPrice;
         }
 
     }

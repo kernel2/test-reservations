@@ -1,8 +1,8 @@
 import { Bus } from "./bus.model";
 
-export interface Trajet {
+export interface ITrajet {
     id: number;
-    nbrPlaces: number;
-    dateDepart: Date;
-    bus: Bus;
+    busNumber: string;
+    dateOfTravel: Date;
+    price: number;
 }

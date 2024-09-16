@@ -501,6 +501,5 @@ FeaturesReport/
 
 
 .vscode/
-front/package-lock.json
 front/.editorconfig
 .angular/

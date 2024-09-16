@@ -10,12 +10,16 @@ const routes: Routes = [
     component: ReservationsComponent 
   },
   { 
+    path: 'cree', 
+    component: ReservationDetailsComponent
+  },
+  { 
     path: ':id', 
     component: ReservationDetailsComponent,
     resolve: {
       reservation: ReservationResolver
     }
-  }
+  },
 ];
 
 @NgModule({
