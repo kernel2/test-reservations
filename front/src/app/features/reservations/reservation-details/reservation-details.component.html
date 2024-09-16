@@ -56,8 +56,9 @@
             </div>
         </div>
 
-        <div class="mt-4">
-            <button type="submit" class="btn btn-success" [disabled]="form.invalid">Submit</button>
+        <div class="btn-group" role="group">
+            <button type="submit" class="btn btn-outline-success btn-sm" [disabled]="form.invalid">Submit</button>
+            <button class="btn btn-outline-primary btn-sm ml-4" [disabled]="form.invalid" [routerLink]="['/reservations']">Retour</button>
         </div>
     </form>
 
