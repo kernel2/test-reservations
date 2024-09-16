@@ -10,15 +10,11 @@ export const BusResolver: ResolveFn<Bus[] | null> = (
 
     const service = inject(BusService);
     const router = inject(Router);
-    const id = route.paramMap.get('id');
-    if (id) {
-        return service.list().pipe(
-            catchError((_err, _caught) => {
-                router.navigate(['/home']);
-                return of(null);
-            })
-        );
-    }
-    return of(null);
+    return service.list().pipe(
+        catchError((_err, _caught) => {
+            router.navigate(['/home']);
+            return of(null);
+        })
+    );
 };
 

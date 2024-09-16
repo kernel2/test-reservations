@@ -1,14 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { ReservationService } from 'src/app/services/reservation.service';
 import { Bus } from 'src/app/shared/models/bus.model';
 import { IReservation, Reservation } from 'src/app/shared/models/reservation.model';
 
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import * as moment from 'moment';
 import { ITrajet } from 'src/app/shared/models/trajet.model';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ReservationSummaryComponent } from '../reservation-summary/reservation-summary.component';
 
 @Component({
@@ -44,18 +44,16 @@ export class ReservationDetailsComponent implements OnInit {
 
     ngOnInit(): void {
         this.reservationId = this.route.snapshot.paramMap.get('id') || '';
+        this.availableBuses = this.route.snapshot.data['busList'];
         if (this.route.snapshot.data && this.route.snapshot.data['reservation']) {
             this.reservation = this.route.snapshot.data['reservation'];
-
+            this.form.patchValue({
+                clientId: this.reservation.clientId,
+                id: this.reservation.id,
+                totalPrice: this.reservation.totalPrice,
+            });
+            (this.reservation.trips || []).forEach(t => (this.form.get('trips') as FormArray).push(this.newTrip(t)));
         }
-
-        this.availableBuses = this.route.snapshot.data['busList'];
-        this.form.patchValue({
-            clientId: this.reservation.clientId,
-            id: this.reservation.id,
-            totalPrice: this.reservation.totalPrice,
-        });
-        (this.reservation.trips || []).forEach(t => (this.form.get('trips') as FormArray).push(this.newTrip(t)));
     }
 
     trips(): FormArray {
@@ -67,7 +65,6 @@ export class ReservationDetailsComponent implements OnInit {
             id: [trip ? trip.id : null],
             busNumber: [trip ? trip.busNumber : '', [Validators.required]],
             dateOfTravel: [trip ? trip.dateOfTravel : '', [Validators.required]],
-            seatsPerTrip: [trip ? trip.seatsPerTrip : '', [Validators.required]],
             price: [trip ? trip.price : null, [Validators.required, Validators.min(0)]]
         });
     }
@@ -91,14 +88,14 @@ export class ReservationDetailsComponent implements OnInit {
         if (this.form.valid) {
             const body = this.form.value;
             body.trips = body.trips.map((trip: any) => {
-                const { _price, id, dateOfTravel, seatsPerTrip, ...rest } = trip;
+                const { _price, id, dateOfTravel, ...rest } = trip;
                 const momentDate = moment(dateOfTravel, 'DD/MM/YYYY HH:mm:ss');
                 const isoString = momentDate.format('YYYY-MM-DDTHH:mm:ss');
                 return { dateOfTravel: isoString, ...rest };
             });
             this.service.create(body).subscribe((reservation: IReservation) => {
                 const reservationData = {
-
+                    
                 };
                 const modalRef = this.modalService.open(ReservationSummaryComponent);
                 modalRef.componentInstance.reservationData = reservationData;
@@ -126,7 +123,6 @@ export class ReservationDetailsComponent implements OnInit {
             });
 
             this.trips().at(index).get('dateOfTravel')?.enable();
-            this.trips().at(index).get('seatsPerTrip')?.enable();
             this.trips().at(index).get('price')?.enable();
 
             this.updateTotalPrice();
