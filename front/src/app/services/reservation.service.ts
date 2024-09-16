@@ -29,9 +29,9 @@ export class ReservationService {
         );
     }
 
-    getReservationsByClientID(id: string): Observable<Reservation> {
-        return this.http.get<IReservation>(`${environment.baseUrl}/reservations/client/${id}`).pipe(
-            map((apiModel: IReservation) => new Reservation(apiModel))
+    getReservationsByClientID(id: number): Observable<Reservation[]> {
+        return this.http.get<IReservation[]>(`${environment.baseUrl}/reservations/client/${id}`).pipe(
+            map((apiModelList: IReservation[]) => apiModelList.map((apiModel: IReservation) => new Reservation(apiModel)))
         ); 
     }
 
