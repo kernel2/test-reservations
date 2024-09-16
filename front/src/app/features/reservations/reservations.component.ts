@@ -29,11 +29,10 @@ export class ReservationsComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.reservationService.getReservationsByClientID(1).subscribe({
+        this.reservationService.getReservationsByClientID(6).subscribe({
             next: (list: Reservation[]) => {
                 this.reservationList = list;
                 this.changeDetectorRef.detectChanges();
-                console.log("error reservation list :", this.reservationList);
             }
         });
     }

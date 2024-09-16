@@ -10,6 +10,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import * as moment from 'moment';
 import { ITrajet } from 'src/app/shared/models/trajet.model';
 import { ReservationSummaryComponent } from '../reservation-summary/reservation-summary.component';
+import { forkJoin, of, switchMap } from 'rxjs';
 
 @Component({
     selector: 'app-reservation-details',
@@ -36,7 +37,6 @@ export class ReservationDetailsComponent implements OnInit {
         private modalService: NgbModal,
         private service: ReservationService) {
         this.form = this.formbuilder.group({
-            clientId: [1, [Validators.required]],
             trips: this.formbuilder.array([]),
             totalPrice: [null, [Validators.required]]
         });
@@ -93,9 +93,19 @@ export class ReservationDetailsComponent implements OnInit {
                 const isoString = momentDate.format('YYYY-MM-DDTHH:mm:ss');
                 return { dateOfTravel: isoString, ...rest };
             });
-            this.service.create(body).subscribe((reservation: IReservation) => {
+            (this.reservation.id ? this.service.update(body) : this.service.create(body)).pipe(
+                switchMap((reservation: IReservation) => {
+                   return forkJoin([of(reservation),this.service.pay(reservation.id, 'Credit card')]);
+                })
+            ).subscribe(([reservation, paymentData]: [IReservation, { ReservationId: string, paymentType: string }]) => {
                 const reservationData = {
-                    
+                    date: reservation.trips[0].dateOfTravel,
+                    day: moment(reservation.trips[0].dateOfTravel).format('dddd'),
+                    time: moment(reservation.trips[0].dateOfTravel).format('HH:mm'),
+                    busNumber: reservation.trips[0].busNumber,
+                    seats: reservation.trips[0].seatsPerTrip,
+                    price: reservation.totalPrice,
+                    paymentMethod: paymentData.paymentType
                 };
                 const modalRef = this.modalService.open(ReservationSummaryComponent);
                 modalRef.componentInstance.reservationData = reservationData;

@@ -1,4 +1,5 @@
 import { HttpClient } from '@angular/common/http';
+
 import { Injectable } from '@angular/core';
 import { Observable, map } from 'rxjs';
 import { IReservation, Reservation } from '../shared/models/reservation.model';
@@ -17,6 +18,11 @@ export class ReservationService {
         );
     }
 
+    update(body: IReservation): Observable<IReservation> {
+       return this.http.put<IReservation>(`${environment.baseUrl}/reservations`, body).pipe(
+            map((apiModel: IReservation) => new Reservation(apiModel))
+        );
+    }
     getReservations(): Observable<Reservation[]> {
         return this.http.get<IReservation[]>(`${environment.baseUrl}/reservations`).pipe(
             map((apiModelList: IReservation[]) => apiModelList.map((apiModel: IReservation) => new Reservation(apiModel)))
@@ -39,7 +45,7 @@ export class ReservationService {
         return this.http.delete<void>(`${environment.baseUrl}/reservations/${id}`);
     }
 
-    pay(id: string, type: 'Credit card' | 'PayPal'): Observable<{ ReservationId: string, paymentType: string }> {
+    pay(id: number, type: 'Credit card' | 'PayPal'): Observable<{ ReservationId: string, paymentType: string }> {
         return this.http.post<{ ReservationId: string, paymentType: string }>(`${environment.baseUrl}/reservations/${id}/pay/${type}`, {});
     }
 
