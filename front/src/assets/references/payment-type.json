@@ -1,0 +1,10 @@
+[
+    {
+        "code": "CREDIT_CARD",
+        "label": "Carte de crédit"
+    },
+    {
+        "code": "PAYPAL",
+        "label": "PayPal"
+    }
+]

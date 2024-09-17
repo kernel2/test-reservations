@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { ReservationService } from "../../services/reservation.service";
 import { Reservation } from "../../shared/models/reservation.model";
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 
 @Component({
     selector: 'app-reservations',
@@ -21,10 +21,22 @@ export class ReservationsComponent implements OnInit {
 
     constructor(
         private reservationService: ReservationService,
+        private router: Router,
         private changeDetectorRef: ChangeDetectorRef) {
     }
 
-    protected confirmDelete(): void {
+
+    navigateToEdit(reservationId: number) {
+        this.router.navigate(['/reservations', reservationId]);
+    }
+
+    protected confirmDelete(reservationId: number) {
+        // Logique pour afficher la modale de confirmation de suppression
+        const modalElement = document.getElementById('deleteConfirmationModal');
+        if (modalElement) {
+            // const modal = new bootstrap.Modal(modalElement);
+            // modal.show();
+        }
     }
 
     ngOnInit(): void {

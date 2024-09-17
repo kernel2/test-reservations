@@ -8,9 +8,12 @@ import { IReservation, Reservation } from 'src/app/shared/models/reservation.mod
 
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import * as moment from 'moment';
+import { forkJoin, of, switchMap } from 'rxjs';
+import { ReferenceService } from 'src/app/services/reference.service';
+import { PaymentModalComponent } from 'src/app/shared/components/payment/payment-modal.component';
+import { Reference } from 'src/app/shared/models/reference';
 import { ITrajet } from 'src/app/shared/models/trajet.model';
 import { ReservationSummaryComponent } from '../reservation-summary/reservation-summary.component';
-import { forkJoin, of, switchMap } from 'rxjs';
 
 @Component({
     selector: 'app-reservation-details',
@@ -28,13 +31,15 @@ export class ReservationDetailsComponent implements OnInit {
     reservationId = '';
     reservation: Reservation = new Reservation();
     form!: FormGroup;
-
     availableBuses: Bus[] = [];
+    paymentType: Reference[] = [];
+    tripIndexToDelete: number | null = null;
 
     constructor(
         private route: ActivatedRoute,
         private formbuilder: FormBuilder,
         private modalService: NgbModal,
+        private referenceService: ReferenceService,
         private service: ReservationService) {
         this.form = this.formbuilder.group({
             clientId: [1],
@@ -54,9 +59,19 @@ export class ReservationDetailsComponent implements OnInit {
                 totalPrice: this.reservation.totalPrice,
             });
             (this.reservation.trips || []).forEach(t => (this.form.get('trips') as FormArray).push(this.newTrip(t)));
-        }else {
+        } else {
             this.reservation.clientId = 1;
         }
+
+        this.referenceService.getPaymentType().subscribe({
+            next: (data: Reference[]) => {
+                this.paymentType = data;
+            },
+            error: (err: any) => {
+                console.log(JSON.stringify(err));
+                this.paymentType = [];
+            }
+        });
     }
 
     trips(): FormArray {
@@ -94,24 +109,32 @@ export class ReservationDetailsComponent implements OnInit {
                 const { _price, id, dateOfTravel, ...rest } = trip;
                 const momentDate = moment(dateOfTravel, 'DD/MM/YYYY HH:mm:ss');
                 const isoString = momentDate.format('YYYY-MM-DDTHH:mm:ss');
-                return this.reservation.id ? {id, dateOfTravel: isoString, ...rest } : { dateOfTravel: isoString, ...rest };
+                return this.reservation.id ? { id, dateOfTravel: isoString, ...rest } : { dateOfTravel: isoString, ...rest };
             });
             (this.reservation.id ? this.service.update(body) : this.service.create(body)).pipe(
                 switchMap((reservation: IReservation) => {
-                   return forkJoin([of(reservation),this.service.pay(reservation.id, 'Credit card')]);
+                    let paymentType;
+                    (async () => {
+                        const paymentModalRef = this.modalService.open(PaymentModalComponent);
+                        paymentModalRef.componentInstance.paymentMethods = this.paymentType;
+                        paymentType = await paymentModalRef.result;
+                    })();
+                    return paymentType ? forkJoin([of(reservation), this.service.pay(reservation.id, 'Credit card')]) : [];
                 })
             ).subscribe(([reservation, paymentData]: [IReservation, { ReservationId: string, paymentType: string }]) => {
-                const reservationData = {
-                    date: reservation.trips[0].dateOfTravel,
-                    day: moment(reservation.trips[0].dateOfTravel).format('dddd'),
-                    time: moment(reservation.trips[0].dateOfTravel).format('HH:mm'),
-                    busNumber: reservation.trips[0].busNumber,
-                    seats: reservation.trips[0].seatsPerTrip,
-                    price: reservation.totalPrice,
-                    paymentMethod: paymentData.paymentType
-                };
-                const modalRef = this.modalService.open(ReservationSummaryComponent);
-                modalRef.componentInstance.reservationData = reservationData;
+                if (reservation && paymentData) {
+                    const reservationData = {
+                        date: reservation.trips[0].dateOfTravel,
+                        day: moment(reservation.trips[0].dateOfTravel).format('dddd'),
+                        time: moment(reservation.trips[0].dateOfTravel).format('HH:mm'),
+                        busNumber: reservation.trips[0].busNumber,
+                        seats: reservation.trips[0].seatsPerTrip,
+                        price: reservation.totalPrice,
+                        paymentMethod: paymentData.paymentType
+                    };
+                    const modalRef = this.modalService.open(ReservationSummaryComponent);
+                    modalRef.componentInstance.reservationData = reservationData;
+                }
             });
         }
     }
@@ -142,4 +165,20 @@ export class ReservationDetailsComponent implements OnInit {
         }
     }
 
+    openDeleteConfirmationModal(index: number) {
+        this.tripIndexToDelete = index;
+        // // Code pour ouvrir la modal Bootstrap
+        // const modalElement = document.getElementById('deleteConfirmationModal');
+        // if (modalElement) {
+        //   const modal = new bootstrap.Modal(modalElement);
+        //   modal.show();
+        // }
+      }
+    
+    //   removeTrip(index: number) {
+    //     // Supprimer le trip à l'index donné
+    //     if (this.trips().length > 1) {
+    //       this.trips().removeAt(index);
+    //     }
+    //   }
 }

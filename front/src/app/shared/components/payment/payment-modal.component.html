@@ -1,0 +1,18 @@
+<div class="modal-header">
+    <h5 class="modal-title">Sélectionnez un moyen de paiement</h5>
+    <button type="button" class="btn-close" aria-label="Close" (click)="close()"></button>
+</div>
+<div class="modal-body">
+    <form [formGroup]="paymentForm">
+        <div class="mb-3">
+            <label for="paymentMethod" class="form-label">Moyen de paiement</label>
+            <select id="paymentMethod" class="form-select" formControlName="paymentMethod">
+                <option *ngFor="let method of paymentMethods" [value]="method.code">{{ method.label }}</option>
+            </select>
+        </div>
+    </form>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="close()">Annuler</button>
+    <button type="button" class="btn btn-primary" (click)="confirmPayment()">Payer</button>
+</div>
