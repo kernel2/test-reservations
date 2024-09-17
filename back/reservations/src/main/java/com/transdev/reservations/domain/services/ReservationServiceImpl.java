@@ -101,37 +101,43 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
-    public Reservation updateReservation(Long reservationId, Reservation reservation) {
+    public Reservation updateReservation(Long reservationId, Reservation updatedReservationData) {
         Reservation existingReservation = reservationRepository.findById(reservationId)
                 .orElseThrow(() -> new ResourceNotFoundException("La réservation avec l'ID " + reservationId + " n'a pas été trouvée."));
 
-        List<Trip> updatedTrips = existingReservation.trips().stream()
-                .map(existingTrip -> {
-                    Optional<Trip> newTripOpt = reservation.trips().stream()
-                            .filter(newTrip -> newTrip.id() != null && newTrip.id().equals(existingTrip.id()))  // Vérification de l'ID non nul avant comparaison
-                            .findFirst();
+        List<Trip> existingTrips = existingReservation.trips();
 
-                    if (newTripOpt.isPresent()) {
-                        Trip newTrip = newTripOpt.get();
-                        return new Trip(
-                                existingTrip.id(),
-                                newTrip.busNumber(),
-                                newTrip.dateOfTravel(),
-                                newTrip.seatsPerTrip(),
-                                newTrip.price()
-                        );
-                    } else {
-                        return existingTrip;
-                    }
-                })
-                .toList();
+        List<Trip> updatedTrips = updatedReservationData.trips();
+
+        List<Trip> finalTripList = updatedTrips.stream().map(updatedTrip -> {
+            if (updatedTrip.id() != null) {
+                return existingTrips.stream()
+                        .filter(trip -> trip.id().equals(updatedTrip.id()))
+                        .findFirst()
+                        .map(existingTrip -> updateTripDetails(existingTrip, updatedTrip))
+                        .orElseThrow(() -> new ResourceNotFoundException("Le Trip avec l'ID " + updatedTrip.id() + " n'a pas été trouvé."));
+            } else {
+                return updatedTrip;
+            }
+        }).toList();
 
         Reservation updatedReservation = new Reservation(
                 existingReservation.id(),
                 existingReservation.clientId(),
-                updatedTrips
+                finalTripList
         );
 
         return reservationRepository.save(updatedReservation);
     }
+
+    private Trip updateTripDetails(Trip existingTrip, Trip updatedTrip) {
+        return new Trip(
+                existingTrip.id(),
+                updatedTrip.busNumber(),
+                updatedTrip.dateOfTravel(),
+                updatedTrip.seatsPerTrip(),
+                updatedTrip.price()
+        );
+    }
+
 }

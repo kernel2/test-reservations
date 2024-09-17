@@ -12,7 +12,6 @@ public class BusDTO {
     private BigDecimal pricePerTrip;
 
     public BusDTO() {
-        //empty constructor needed for deserialization
     }
 
     public String getBusNumber() {

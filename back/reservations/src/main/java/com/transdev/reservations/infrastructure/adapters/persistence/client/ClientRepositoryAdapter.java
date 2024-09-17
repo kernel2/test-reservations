@@ -3,9 +3,6 @@ package com.transdev.reservations.infrastructure.adapters.persistence.client;
 import com.transdev.reservations.domain.exceptions.ResourceAlreadyExistsException;
 import com.transdev.reservations.domain.model.Client;
 import com.transdev.reservations.domain.ports.outgoing.ClientRepository;
-import com.transdev.reservations.infrastructure.adapters.rest.ClientController;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,7 +12,6 @@ import java.util.Optional;
 @Component
 @Transactional
 public class ClientRepositoryAdapter implements ClientRepository {
-    private static final Logger log = LoggerFactory.getLogger(ClientController.class);
 
     private final ClientJpaRepository clientJpaRepository;
     private final ClientMapper clientMapper;

@@ -6,7 +6,6 @@ public class ClientDTO {
     private String email;
 
     public ClientDTO() {
-        //empty constructor needed for deserialization
     }
 
     public Long getId() {

@@ -51,9 +51,9 @@ public class ReservationApplicationService {
         reservationService.deleteReservation(id);
     }
 
-    public ReservationDTO updateReservation(Long reservationId,ReservationDTO reservationDTO) {
+    public ReservationDTO updateReservation(Long reservationId, ReservationDTO reservationDTO) {
         Reservation reservation = reservationMapper.toDomainModel(reservationDTO);
-        Reservation updatedReservation = reservationService.updateReservation(reservationId,reservation);
+        Reservation updatedReservation = reservationService.updateReservation(reservationId, reservation);
         return reservationMapper.toDTO(updatedReservation);
     }
 }

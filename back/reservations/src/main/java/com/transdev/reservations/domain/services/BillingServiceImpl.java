@@ -43,7 +43,7 @@ public class BillingServiceImpl implements BillingService {
     @Override
     public List<Bill> getBillsSortedByAmount() {
         return billRepository.findAll().stream()
-                .sorted((b1, b2) -> b1.reservationId().compareTo(b2.reservationId())) // Trier par identifiant
+                .sorted((b1, b2) -> b1.reservationId().compareTo(b2.reservationId()))
                 .toList();
     }
 }

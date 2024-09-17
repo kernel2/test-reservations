@@ -43,7 +43,7 @@ public class BusController {
             @PathVariable String busNumber,
             @RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate travelDate) {
         LocalDateTime dateStart = travelDate.atStartOfDay();
-        LocalDateTime dateEnd = travelDate.atTime(23, 59, 59); // End of the day
+        LocalDateTime dateEnd = travelDate.atTime(23, 59, 59);
         List<TripDTO> trips = busApplicationService.getTripsByBusAndDate(busNumber, dateStart, dateEnd);
         return ResponseEntity.ok(trips);
     }

@@ -8,8 +8,6 @@ import com.transdev.reservations.domain.ports.outgoing.BusRepository;
 import com.transdev.reservations.infrastructure.adapters.persistence.trip.TripEntity;
 import com.transdev.reservations.infrastructure.adapters.persistence.trip.TripJpaRepository;
 import com.transdev.reservations.infrastructure.adapters.persistence.trip.TripMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,7 +17,6 @@ import java.util.List;
 @Component
 @Transactional
 public class BusRepositoryAdapter implements BusRepository {
-    private static final Logger log = LoggerFactory.getLogger(BusRepositoryAdapter.class);
 
     private final BusJpaRepository busJpaRepository;
     private final BusMapper busMapper;

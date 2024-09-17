@@ -13,10 +13,11 @@ public class TripDTO {
     public TripDTO() {
     }
 
-    public TripDTO(Long id, String busNumber, LocalDateTime dateOfTravel,int seatsPerTrip,BigDecimal price) {
+    public TripDTO(Long id, String busNumber, LocalDateTime dateOfTravel, int seatsPerTrip, BigDecimal price) {
         this.id = id;
         this.busNumber = busNumber;
         this.dateOfTravel = dateOfTravel;
+        this.seatsPerTrip = seatsPerTrip;
         this.price = price;
     }
 

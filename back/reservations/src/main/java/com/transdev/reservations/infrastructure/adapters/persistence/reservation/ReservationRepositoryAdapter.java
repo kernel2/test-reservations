@@ -48,7 +48,7 @@ public class ReservationRepositoryAdapter implements ReservationRepository {
                     existingTripEntity.setSeatsPerTrip(tripEntity.getSeatsPerTrip());
                     existingTripEntity.setPrice(tripEntity.getPrice());
 
-                    tripJpaRepository.save(existingTripEntity);
+                    tripJpaRepository.saveAndFlush(existingTripEntity);
                 }
             }
         }
